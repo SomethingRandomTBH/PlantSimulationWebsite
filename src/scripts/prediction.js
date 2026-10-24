@@ -15,7 +15,7 @@ function getNumber(formData, key) {
 
 function validateInputs(data) {
   const ranges = {
-    Age_Days: [1, 358],
+    Age_Days: [1, 721],
     Stem_Length_Inches: [0.1, 500],
     Leaf_Count: [0, 500],
     Light_Lux: [300, 10000],

@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import joblib
+import os
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GroupShuffleSplit
@@ -61,7 +62,8 @@ y_leaves_test = leaf_count_target.iloc[test_idx]
 # ============================================================
 
 growth_model = RandomForestRegressor(
-    n_estimators=300,
+    n_estimators=100,
+    max_depth=15,
     min_samples_leaf=5,
     random_state=RANDOM_STATE,
     n_jobs=-1,
@@ -205,6 +207,15 @@ model_bundle = {
     "feature_columns": list(X.columns),
 }
 
-joblib.dump(model_bundle, "pothos_rf_models.joblib")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-print("Saved trained models: pothos_rf_models.joblib")
+joblib.dump(
+    {
+        "growth_model": growth_model,
+        "leaf_count_model": leaf_count_model,
+        "feature_columns": list(X.columns),
+    },
+    os.path.join(BASE_DIR, "pothos_rf_models.joblib")
+)
+
+print("Models saved successfully.")
