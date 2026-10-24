@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+    <link rel="manifest" href="../images/site.webmanifest">
+
+    <title>Growth Forecast | The Botanists' Plant Simulation</title>
+
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/prediction-output.css">
+  </head>
+
+  <body>
+    <header>
+      <h1>The Botanists' Plant Simulation</h1>
+
+      <nav>
+        <a href="../mainPage.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="planning.html">Plan</a>
+        <a href="team.html">Team</a>
+        <a href="research.html">Research</a>
+        <a href="prediction.html">Predict Growth</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Shown when there is no prediction to display -->
+      <section id="no-data" hidden>
+        <h2>No forecast to show yet</h2>
+
+        <p>
+          Enter your plant's current conditions on the prediction page
+          and run a prediction. Your results will appear here.
+        </p>
+
+        <div class="button-row">
+          <a class="button" href="prediction.html">Go to Predict Growth</a>
+        </div>
+      </section>
+
+      <!-- Shown when a prediction is available -->
+      <div id="output" hidden>
+        <section>
+          <h2>Your Golden Pothos Forecast</h2>
+
+          <p class="lead">
+            Model estimates for the next seven days, based on the
+            conditions you entered.
+          </p>
+
+          <div class="result-grid">
+            <div class="result-card">
+              <span class="result-label">Predicted stem growth</span>
+
+              <div class="result-value">
+                <span id="growth-result">&mdash;</span>
+                <span class="result-unit">inches</span>
+              </div>
+
+              <p>Estimated additional vine length over 7 days.</p>
+            </div>
+
+            <div class="result-card">
+              <span class="result-label">Estimated total leaf count</span>
+
+              <div class="result-value">
+                <span id="leaf-result">&mdash;</span>
+                <span class="result-unit">leaves</span>
+              </div>
+
+              <p>Model estimate for the current total leaf count.</p>
+            </div>
+
+            <div class="result-card result-card-highlight">
+              <span class="result-label">Whole-leaf estimate</span>
+
+              <div class="result-value">
+                <span id="rounded-leaf-result">&mdash;</span>
+                <span class="result-unit">leaves</span>
+              </div>
+
+              <p>Rounded version of the total leaf-count prediction.</p>
+            </div>
+          </div>
+
+          <h3>How to interpret this</h3>
+          <p id="result-explanation"></p>
+        </section>
+
+        <section id="summary-section" aria-labelledby="summary-title">
+          <h2 id="summary-title">Plain-Language Summary</h2>
+
+          <p class="lead">
+            A short summary of your forecast, written by Google Gemini
+            from the model's results.
+          </p>
+
+          <div class="llm-box">
+            <div class="llm-box-header">
+              <span class="llm-box-label">Gemini summary</span>
+
+              <button
+                id="copy-button"
+                class="copy-button"
+                type="button"
+                aria-label="Copy summary to clipboard"
+                disabled
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+
+                <span id="copy-label">Copy</span>
+              </button>
+            </div>
+
+            <div class="llm-box-body" aria-live="polite">
+              <div id="summary-loading" class="llm-loading">
+                <span class="llm-spinner" aria-hidden="true"></span>
+                <span>Writing your summary&hellip;</span>
+              </div>
+
+              <!-- Must be a div so rendered Markdown can contain block elements. -->
+              <div
+                id="summary-text"
+                class="llm-text markdown-body"
+                hidden
+              ></div>
+
+              <div id="summary-error" class="llm-error" hidden>
+                <p id="summary-error-message"></p>
+
+                <button id="retry-button" class="llm-retry" type="button">
+                  Try again
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Conditions You Entered</h2>
+
+          <table class="input-table">
+            <tbody id="input-summary"></tbody>
+          </table>
+
+          <div class="button-row">
+            <a class="button" href="prediction.html">Start a new prediction</a>
+            <a class="button button-secondary" href="../mainPage.html">Back to home</a>
+          </div>
+        </section>
+
+        <section>
+          <h2>About These Estimates</h2>
+
+          <p>
+            This model was trained on synthetic pothos data. Its reported
+            accuracy measures performance on simulated plants and may not
+            reflect real-world accuracy. The healthy-plant simulation assumes
+            no leaf loss. Predictions are estimates, not guaranteed
+            biological outcomes.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Plant Simulation</p>
+    </footer>
+
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/prediction-output.js"></script>
+  </body>
+</html>

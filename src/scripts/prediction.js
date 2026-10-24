@@ -117,7 +117,8 @@ form.addEventListener("submit", async (event) => {
       throw new Error(result.error || "The prediction request failed.");
     }
 
-    displayResults(result);
+    sessionStorage.setItem("pothosPrediction", JSON.stringify({ inputs: data, result }));
+    window.location.href = "/pages/prediction-output.html";
   } catch (error) {
     placeholder.hidden = false;
     errorBox.textContent =
