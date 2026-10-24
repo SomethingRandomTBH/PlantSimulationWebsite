@@ -18,14 +18,13 @@ pot_size = np.random.choice([4, 6, 8, 10], size=num_samples)   # Pot diameter in
 base_growth = age * 0.25  # Baseline growth expectation over time
 
 # Light Rules (Lux): Fatal bounds below 500 and above 10,000. Optimal between 1,500 and 4,000.
+optimal_zone = 1 - light_lux / 5000 
 light_mult = np.select(
     [
-        (light_lux < 500) | (light_lux > 10000),      # Fatal zones
-        (light_lux >= 500) & (light_lux < 1500),      # Low light (survivable but slow)
-        (light_lux >= 1500) & (light_lux <= 4000),    # Optimal bright indirect light
-        (light_lux > 4000) & (light_lux <= 10000)     # High light (tolerable but pushing it)
+        (light_lux < 500) | (light_lux >= 20000),      # Fatal zones
+        (light_lux >= 500) & (light_lux < 20000),     # low - Optimal - high bright
     ],
-    [0.05, 0.4, 1.3, 0.9]
+    [0, optimal_zone]
 )
 
 # Watering Rules: < 7 days causes root rot. > 17 days dries it out.
@@ -72,9 +71,9 @@ df = pd.DataFrame({
     'Temperature_C': np.round(temperature, 1),
     'Pot_Size_Inches': pot_size,
     'Stem_Length_CM': np.round(stem_length, 1),
-    'Leaf_Count': leaf_count,
-    'Condition': health_status
+    'Leaf_Count': leaf_count
 })
 
 # Save to CSV
-df.to_csv('synthetic_pothos_growth_spaced.csv', index=False)
+df.to_csv('synthetic_pothos_growth.csv', index=False)
+print("done")
