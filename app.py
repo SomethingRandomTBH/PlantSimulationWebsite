@@ -113,6 +113,32 @@ if not feature_columns:
 print("Pothos stem-growth model loaded.")
 
 
+if "growth_margin_of_error_90" not in bundle:
+    raise ValueError(
+        "The saved model has no calibrated prediction interval. "
+        "Run train_pothos_models.py to retrain and save the model."
+    )
+
+growth_margin_of_error_90 = float(
+    bundle["growth_margin_of_error_90"]
+)
+
+if (
+    not np.isfinite(growth_margin_of_error_90)
+    or growth_margin_of_error_90 < 0
+):
+    raise ValueError(
+        "The saved growth prediction interval threshold is invalid."
+    )
+
+print(
+    "90% growth prediction interval loaded:",
+    round(growth_margin_of_error_90, 4),
+    "inches",
+)
+
+
+
 class InputError(Exception):
     pass
 
