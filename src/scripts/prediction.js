@@ -15,7 +15,7 @@ function getNumber(formData, key) {
 
 function validateInputs(data) {
   const ranges = {
-    Age_Days: [1, 721],
+    Age_Days: [1, 751],
     Stem_Length_Inches: [0.1, 500],
     Leaf_Count: [0, 500],
     Light_Lux: [300, 10000],
@@ -52,21 +52,32 @@ function validateInputs(data) {
 }
 
 function displayResults(data) {
+  const growth = Number(data.predicted_growth_inches);
+  const totalLeaves = Number(data.predicted_total_leaf_count);
+  const newLeaves = Number(data.predicted_new_leaves);
+  const roundedNewLeaves = Number(data.rounded_predicted_new_leaves);
+
   document.getElementById("growth-result").textContent =
-    Number(data.predicted_growth_inches).toFixed(2);
+    growth.toFixed(2);
 
+  // Keep the total-leaf model prediction in its own card.
   document.getElementById("leaf-result").textContent =
-    Number(data.predicted_total_leaf_count).toFixed(2);
+    totalLeaves.toFixed(2);
 
+  // IMPORTANT:
+  // The Whole-leaf estimate now displays NEW leaves,
+  // rather than the rounded total-leaf model prediction.
   document.getElementById("rounded-leaf-result").textContent =
-    String(data.rounded_predicted_total_leaf_count);
+    String(roundedNewLeaves);
 
   document.getElementById("result-explanation").textContent =
-    `The model estimates ${Number(data.predicted_growth_inches).toFixed(2)} inches ` +
+    `The model estimates ${growth.toFixed(2)} inches ` +
     `of additional vine growth over the next seven days. ` +
-    `Its estimated current total is ${Number(data.predicted_total_leaf_count).toFixed(2)} leaves, ` +
-    `or approximately ${data.rounded_predicted_total_leaf_count} whole leaves. ` +
-    `The leaf estimate is a prediction of total leaves, not the number of new leaves next week.`;
+    `The estimated current total is ${totalLeaves.toFixed(2)} leaves. ` +
+    `Based on average spacing of 1.2 inches per leaf, ` +
+    `the estimated new leaf production is ${newLeaves.toFixed(2)} leaves, ` +
+    `or approximately ${roundedNewLeaves} whole new leaves. ` +
+    `The whole-leaf estimate represents new leaves, not total leaves.`;
 
   placeholder.hidden = true;
   results.hidden = false;

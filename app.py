@@ -28,7 +28,27 @@ app = Flask(__name__)
 
 
 # --------------------------------------------------
-# Train the models if the saved model is missing
+# Configuration
+# --------------------------------------------------
+
+ALLOWED_POTS = [4, 6, 8, 10, 12]
+ALLOWED_HUMIDITY = ["Low", "Average", "High"]
+
+AVERAGE_LEAF_SPACING_INCHES = 1.2
+
+LIMITS = {
+    "Age_Days": (1, 751),
+    "Stem_Length_Inches": (0.1, 500),
+    "Leaf_Count": (0, 500),
+    "Light_Lux": (300, 10000),
+    "Watering_Volume_mL": (100, 600),
+    "Watering_Freq_Days": (4, 14),
+    "Temperature_F": (62, 85),
+}
+
+
+# --------------------------------------------------
+# Train the model if the saved model is missing
 # --------------------------------------------------
 
 def ensure_model_exists():
@@ -42,7 +62,7 @@ def ensure_model_exists():
             f"Training script not found: {TRAIN_SCRIPT}"
         )
 
-    print("Model file not found. Training models now...")
+    print("Model file not found. Training model now...")
 
     subprocess.run(
         [sys.executable, TRAIN_SCRIPT],
@@ -63,34 +83,22 @@ ensure_model_exists()
 
 
 # --------------------------------------------------
-# Load the trained models
+# Load the stem-growth model
 # --------------------------------------------------
 
 bundle = joblib.load(MODEL_PATH)
 
+if "growth_model" not in bundle or "feature_columns" not in bundle:
+    raise ValueError(
+        "The saved model bundle does not contain the expected "
+        "growth_model and feature_columns. Run train_pothos_models.py "
+        "to retrain and save the updated model."
+    )
+
 growth_model = bundle["growth_model"]
-leaf_count_model = bundle["leaf_count_model"]
 feature_columns = bundle["feature_columns"]
 
-print("Pothos prediction models loaded successfully.")
-
-
-# --------------------------------------------------
-# Accepted input values
-# --------------------------------------------------
-
-ALLOWED_POTS = [4, 6, 8, 10, 12]
-ALLOWED_HUMIDITY = ["Low", "Average", "High"]
-
-LIMITS = {
-    "Age_Days": (1, 358),
-    "Stem_Length_Inches": (0.1, 500),
-    "Leaf_Count": (0, 500),
-    "Light_Lux": (300, 10000),
-    "Watering_Volume_mL": (100, 600),
-    "Watering_Freq_Days": (4, 14),
-    "Temperature_F": (62, 85),
-}
+print("Pothos stem-growth model loaded successfully.")
 
 
 # --------------------------------------------------
@@ -165,8 +173,11 @@ def predict():
             "error": "Missing inputs: " + ", ".join(missing)
         }), 400
 
-    # Convert and validate numeric values
-    numeric =   {}
+    # ----------------------------------------------
+    # Convert numeric inputs
+    # ----------------------------------------------
+
+    numeric = {}
 
     try:
         for key in required:
@@ -187,7 +198,10 @@ def predict():
             "error": "All numeric inputs must be valid finite numbers."
         }), 400
 
+    # ----------------------------------------------
     # Validate configured ranges
+    # ----------------------------------------------
+
     for key, (minimum, maximum) in LIMITS.items():
         if not minimum <= numeric[key] <= maximum:
             return jsonify({
@@ -225,11 +239,16 @@ def predict():
             "error": "Unsupported humidity level."
         }), 400
 
-    # Build the feature row
+    # ----------------------------------------------
+    # Build features for the growth model
+    # ----------------------------------------------
+    # Leaf_Count is deliberately excluded because it
+    # was not used as a predictor during training.
+    # ----------------------------------------------
+
     row = {
         "Age_Days": numeric["Age_Days"],
         "Stem_Length_Inches": numeric["Stem_Length_Inches"],
-        "Leaf_Count": numeric["Leaf_Count"],
         "Pot_Size_Inches": numeric["Pot_Size_Inches"],
         "Light_Lux": numeric["Light_Lux"],
         "Watering_Volume_mL": numeric["Watering_Volume_mL"],
@@ -240,40 +259,73 @@ def predict():
 
     features = pd.DataFrame([row])
 
-    # Match the categorical encoding used in training
+    # Match categorical encoding used during training
     features = pd.get_dummies(
         features,
         columns=["Humidity_Level"],
         dtype=int,
     )
 
-    # Preserve training feature names and order
+    # Preserve exact training feature names and order
     features = features.reindex(
         columns=feature_columns,
         fill_value=0,
     )
 
-    # Generate predictions
+    # ----------------------------------------------
+    # Predict next-period stem growth
+    # ----------------------------------------------
+
     predicted_growth = max(
         0.0,
         float(growth_model.predict(features)[0]),
     )
 
-    predicted_total_leaves = max(
-        0.0,
-        float(leaf_count_model.predict(features)[0]),
+    # ----------------------------------------------
+    # Estimate new leaves from predicted growth
+    # ----------------------------------------------
+    # Average estimate: one leaf per 1.2 inches.
+    # This is an approximation, not an exact node count.
+    # ----------------------------------------------
+
+    predicted_new_leaves = (
+        predicted_growth / AVERAGE_LEAF_SPACING_INCHES
     )
+
+    rounded_new_leaves = int(
+        np.floor(predicted_new_leaves + 0.5)
+    )
+
+    # ----------------------------------------------
+    # Calculate projected total leaf count
+    # ----------------------------------------------
+
+    current_leaf_count = int(numeric["Leaf_Count"])
+
+    predicted_total_leaves = (
+        current_leaf_count + predicted_new_leaves
+    )
+
+    rounded_total_leaves = int(
+        np.floor(predicted_total_leaves + 0.5)
+    )
+
+    # ----------------------------------------------
+    # Return predictions to the website
+    # ----------------------------------------------
 
     return jsonify({
         "predicted_growth_inches": round(
             predicted_growth, 2
         ),
+        "predicted_new_leaves": round(
+            predicted_new_leaves, 2
+        ),
+        "rounded_predicted_new_leaves": rounded_new_leaves,
         "predicted_total_leaf_count": round(
             predicted_total_leaves, 2
         ),
-        "rounded_predicted_total_leaf_count": int(
-            np.floor(predicted_total_leaves + 0.5)
-        ),
+        "rounded_predicted_total_leaf_count": rounded_total_leaves,
     })
 
 

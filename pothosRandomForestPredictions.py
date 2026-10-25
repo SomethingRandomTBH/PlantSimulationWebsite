@@ -1,20 +1,39 @@
 
+import os
+
+import joblib
 import numpy as np
 import pandas as pd
-import joblib
-import os
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import GroupShuffleSplit
 from sklearn.metrics import mean_absolute_error, r2_score
 
-DATA_FILE = "synthetic_pothos_growth.csv"
+
+# --------------------------------------------------
+# Configuration
+# --------------------------------------------------
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_FILE = os.path.join(BASE_DIR, "synthetic_pothos_growth.csv")
+MODEL_FILE = os.path.join(BASE_DIR, "pothos_rf_models.joblib")
+IMPORTANCE_FILE = os.path.join(
+    BASE_DIR, "pothos_rf_feature_importance.csv"
+)
+PREDICTIONS_FILE = os.path.join(
+    BASE_DIR, "pothos_rf_test_predictions.csv"
+)
+
 RANDOM_STATE = 42
+
+
+# --------------------------------------------------
+# Load dataset
+# --------------------------------------------------
 
 df = pd.read_csv(DATA_FILE)
 
-# Leaf count is deliberately excluded from the predictors
-# of the leaf-count model.
 BASE_FEATURES = [
     "Age_Days",
     "Stem_Length_Inches",
@@ -26,17 +45,23 @@ BASE_FEATURES = [
     "Humidity_Level",
 ]
 
+TARGET = "Growth_Inches_Next_Period"
+
 X = pd.get_dummies(
     df[BASE_FEATURES].copy(),
     columns=["Humidity_Level"],
-    dtype=int
+    dtype=int,
 )
 
-growth_target = df["Growth_Inches_Next_Period"]
-leaf_count_target = df["Leaf_Count"]
+y = df[TARGET]
 
-# Hold out entire plants to prevent observations from the
-# same plant leaking into both training and testing.
+feature_columns = list(X.columns)
+
+
+# --------------------------------------------------
+# Split by plant to prevent data leakage
+# --------------------------------------------------
+
 splitter = GroupShuffleSplit(
     n_splits=1,
     test_size=0.20,
@@ -44,22 +69,19 @@ splitter = GroupShuffleSplit(
 )
 
 train_idx, test_idx = next(
-    splitter.split(X, groups=df["Plant_ID"])
+    splitter.split(X, y, groups=df["Plant_ID"])
 )
 
 X_train = X.iloc[train_idx]
 X_test = X.iloc[test_idx]
 
-y_growth_train = growth_target.iloc[train_idx]
-y_growth_test = growth_target.iloc[test_idx]
-
-y_leaves_train = leaf_count_target.iloc[train_idx]
-y_leaves_test = leaf_count_target.iloc[test_idx]
+y_train = y.iloc[train_idx]
+y_test = y.iloc[test_idx]
 
 
-# ============================================================
-# MODEL 1: NEXT-WEEK STEM GROWTH
-# ============================================================
+# --------------------------------------------------
+# Train stem-growth Random Forest
+# --------------------------------------------------
 
 growth_model = RandomForestRegressor(
     n_estimators=100,
@@ -69,102 +91,52 @@ growth_model = RandomForestRegressor(
     n_jobs=-1,
 )
 
-growth_model.fit(X_train, y_growth_train)
+growth_model.fit(X_train, y_train)
+
+
+# --------------------------------------------------
+# Evaluate model
+# --------------------------------------------------
 
 growth_predictions = np.maximum(
     0.0,
-    growth_model.predict(X_test)
+    growth_model.predict(X_test),
 )
 
 print("\n=== STEM GROWTH MODEL ===")
+
 print(
     "MAE (inches):",
-    round(mean_absolute_error(
-        y_growth_test, growth_predictions
-    ), 4),
+    round(mean_absolute_error(y_test, growth_predictions), 4),
 )
+
 print(
     "R-squared:",
-    round(r2_score(
-        y_growth_test, growth_predictions
-    ), 4),
+    round(r2_score(y_test, growth_predictions), 4),
 )
 
 
-# ============================================================
-# MODEL 2: TOTAL LEAF COUNT
-# ============================================================
-# This predicts the current total leaf count, not the number
-# of leaves appearing during a single week.
-# Stem length is a key predictor.
-# ============================================================
-
-leaf_count_model = RandomForestRegressor(
-    n_estimators=300,
-    min_samples_leaf=3,
-    random_state=RANDOM_STATE,
-    n_jobs=-1,
-)
-
-leaf_count_model.fit(X_train, y_leaves_train)
-
-leaf_count_predictions = np.maximum(
-    0.0,
-    leaf_count_model.predict(X_test)
-)
-
-rounded_leaf_count_predictions = np.maximum(
-    0,
-    np.rint(leaf_count_predictions)
-).astype(int)
-
-print("\n=== TOTAL LEAF COUNT MODEL ===")
-print(
-    "MAE (leaves):",
-    round(mean_absolute_error(
-        y_leaves_test, leaf_count_predictions
-    ), 4),
-)
-print(
-    "R-squared:",
-    round(r2_score(
-        y_leaves_test, leaf_count_predictions
-    ), 4),
-)
-print(
-    "Rounded prediction MAE:",
-    round(mean_absolute_error(
-        y_leaves_test, rounded_leaf_count_predictions
-    ), 4),
-)
-
-# ============================================================
-# FEATURE IMPORTANCE
-# ============================================================
+# --------------------------------------------------
+# Feature importance
+# --------------------------------------------------
 
 importance = pd.DataFrame({
-    "Feature": X.columns,
+    "Feature": feature_columns,
     "Growth_Importance": growth_model.feature_importances_,
-    "Leaf_Count_Importance": leaf_count_model.feature_importances_,
 }).sort_values(
-    "Leaf_Count_Importance",
+    "Growth_Importance",
     ascending=False,
 )
 
 print("\n=== FEATURE IMPORTANCE ===")
 print(importance.to_string(index=False))
 
+importance.to_csv(IMPORTANCE_FILE, index=False)
 
 
-importance.to_csv(
-    "pothos_rf_feature_importance.csv",
-    index=False,
-)
-
-
-# ============================================================
-# SAVE TEST PREDICTIONS
-# ============================================================
+# --------------------------------------------------
+# Save test predictions
+# --------------------------------------------------
 
 predictions_df = df.iloc[test_idx][
     [
@@ -181,41 +153,24 @@ predictions_df["Predicted_Growth_Inches"] = np.round(
     growth_predictions, 2
 )
 
-predictions_df["Predicted_Total_Leaf_Count"] = np.round(
-    leaf_count_predictions, 2
-)
-
-predictions_df["Rounded_Predicted_Total_Leaf_Count"] = np.round(
-    rounded_leaf_count_predictions, 2
-)
-
 predictions_df = predictions_df.round(2)
 
-predictions_df.to_csv(
-    "pothos_rf_test_predictions.csv",
-    index=False,
-)
+predictions_df.to_csv(PREDICTIONS_FILE, index=False)
 
-print("\nSaved:")
-print("- pothos_rf_feature_importance.csv")
-print("- pothos_rf_test_predictions.csv")
 
-# Save the models and the exact feature order used during training.
+# --------------------------------------------------
+# Save model and exact feature order
+# --------------------------------------------------
+
 model_bundle = {
     "growth_model": growth_model,
-    "leaf_count_model": leaf_count_model,
-    "feature_columns": list(X.columns),
+    "feature_columns": feature_columns,
 }
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+joblib.dump(model_bundle, MODEL_FILE)
 
-joblib.dump(
-    {
-        "growth_model": growth_model,
-        "leaf_count_model": leaf_count_model,
-        "feature_columns": list(X.columns),
-    },
-    os.path.join(BASE_DIR, "pothos_rf_models.joblib")
-)
-
-print("Models saved successfully.")
+print("\nSaved:")
+print(f"- {IMPORTANCE_FILE}")
+print(f"- {PREDICTIONS_FILE}")
+print(f"- {MODEL_FILE}")
+print("\nStem-growth model trained and saved successfully.")

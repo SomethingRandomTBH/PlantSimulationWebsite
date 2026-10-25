@@ -4,7 +4,7 @@ import pandas as pd
 
 # ============================================================
 # GOLDEN POTHOS SYNTHETIC DATASET
-# 5,000 plants x 104 weeks = 260,000 rows
+# 5,000 plants x 52 weeks = 260,000 rows
 #
 # Healthy plants have no leaf loss.
 # Leaf production depends on stem growth and node spacing.
@@ -12,7 +12,7 @@ import pandas as pd
 
 rng = np.random.default_rng(42)
 
-NUM_PLANTS = 5000
+NUM_PLANTS = 2000
 NUM_WEEKS = 104
 PERIOD_DAYS = 7
 OUTPUT_FILE = "synthetic_pothos_growth.csv"

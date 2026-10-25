@@ -1,0 +1,3 @@
+Model,Validation_MAE
+Original Random Forest,0.5828383552737574
+Random Forest + Ridge Correction,0.5831185894426276
