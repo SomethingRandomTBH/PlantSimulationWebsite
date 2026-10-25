@@ -63,13 +63,7 @@ function showInputs(inputs) {
   }
 }
 
-// ---------------------------------------------------------------
-// Safe Markdown renderer for the Gemini summary.
-// Supports headings, paragraphs, bold, italic, strikethrough,
-// inline code, fenced code blocks, blockquotes, and lists.
-// Raw HTML is escaped before rendering.
-// ---------------------------------------------------------------
-
+// Escape HTML before processing Markdown to prevent raw HTML injection.
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (character) => ({
     "&": "&amp;",
@@ -81,11 +75,11 @@ function escapeHtml(value) {
 }
 
 function renderInlineMarkdown(text) {
-  const inlineCode = [];
+  const codeSegments = [];
 
   let html = text.replace(/`([^`\n]+)`/g, (_, code) => {
-    const index = inlineCode.length;
-    inlineCode.push(`<code>${code}</code>`);
+    const index = codeSegments.length;
+    codeSegments.push(`<code>${code}</code>`);
     return `\u0000INLINECODE${index}\u0000`;
   });
 
@@ -94,13 +88,126 @@ function renderInlineMarkdown(text) {
     .replace(/__(.+?)__/g, "<strong>$1</strong>")
     .replace(/~~(.+?)~~/g, "<del>$1</del>")
     .replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, "<em>$1</em>")
-    .replace(/(?<!_)_([^_\n]+)_(?!_)/g, "<em>$1</em>")
-    .replace(
-      /\u0000INLINECODE(\d+)\u0000/g,
-      (_, index) => inlineCode[Number(index)]
+    .replace(/(?<!_)_([^_\n]+)_(?!_)/g, "<em>$1</em>");
+
+  return html.replace(
+    /\u0000INLINECODE(\d+)\u0000/g,
+    (_, index) => codeSegments[Number(index)]
+  );
+}
+
+// Splits a Markdown table row while respecting escaped pipes and code spans.
+function splitTableRow(line) {
+  let text = line.trim();
+
+  if (text.startsWith("|")) text = text.slice(1);
+  if (text.endsWith("|") && !text.endsWith("\\|")) {
+    text = text.slice(0, -1);
+  }
+
+  const cells = [];
+  let cell = "";
+  let escaped = false;
+  let inCode = false;
+
+  for (let i = 0; i < text.length; i += 1) {
+    const character = text[i];
+
+    if (character === "\\" && !escaped) {
+      escaped = true;
+      cell += character;
+      continue;
+    }
+
+    if (character === "`" && !escaped) {
+      inCode = !inCode;
+      cell += character;
+      continue;
+    }
+
+    if (character === "|" && !escaped && !inCode) {
+      cells.push(cell.trim());
+      cell = "";
+    } else {
+      cell += character;
+    }
+
+    escaped = false;
+  }
+
+  cells.push(cell.trim());
+
+  return cells.map((value) => value.replace(/\\\|/g, "|"));
+}
+
+function isTableSeparator(line) {
+  if (!line.includes("|")) return false;
+
+  const cells = splitTableRow(line);
+
+  return cells.length > 0 && cells.every((cell) =>
+    /^:?-{3,}:?$/.test(cell.replace(/\s/g, ""))
+  );
+}
+
+function renderTable(lines, startIndex) {
+  const headerCells = splitTableRow(lines[startIndex]);
+  const separatorCells = splitTableRow(lines[startIndex + 1]);
+
+  if (
+    headerCells.length === 0 ||
+    !isTableSeparator(lines[startIndex + 1])
+  ) {
+    return null;
+  }
+
+  const columnCount = headerCells.length;
+  const alignments = Array.from({ length: columnCount }, (_, index) => {
+    const separator = (separatorCells[index] || "---").replace(/\s/g, "");
+
+    if (separator.startsWith(":") && separator.endsWith(":")) {
+      return "center";
+    }
+
+    if (separator.endsWith(":")) {
+      return "right";
+    }
+
+    return "left";
+  });
+
+  const rows = [];
+  let index = startIndex + 2;
+
+  while (index < lines.length && lines[index].includes("|")) {
+    const cells = splitTableRow(lines[index]);
+
+    if (cells.length === 1 && cells[0] === "") break;
+
+    rows.push(cells);
+    index += 1;
+  }
+
+  const renderCells = (cells, tag) => {
+    const normalizedCells = Array.from(
+      { length: columnCount },
+      (_, i) => cells[i] || ""
     );
 
-  return html;
+    return `<tr>${normalizedCells.map((cell, i) =>
+      `<${tag} style="text-align:${alignments[i]}">` +
+      `${renderInlineMarkdown(cell)}</${tag}>`
+    ).join("")}</tr>`;
+  };
+
+  const html =
+    `<div class="markdown-table-wrapper">` +
+    `<table class="markdown-table">` +
+    `<thead>${renderCells(headerCells, "th")}</thead>` +
+    `<tbody>${rows.map((row) => renderCells(row, "td")).join("")}</tbody>` +
+    `</table></div>`;
+
+  return { html, nextIndex: index };
 }
 
 function renderMarkdown(markdown) {
@@ -189,13 +296,29 @@ function renderMarkdown(markdown) {
       continue;
     }
 
-    // Blank lines separate blocks.
+    // Markdown tables: header row followed by a separator row.
+    if (
+      line.includes("|") &&
+      i + 1 < lines.length &&
+      isTableSeparator(lines[i + 1])
+    ) {
+      flushAll();
+
+      const table = renderTable(lines, i);
+
+      if (table) {
+        blocks.push(table.html);
+        i = table.nextIndex - 1;
+        continue;
+      }
+    }
+
     if (!line.trim()) {
       flushAll();
       continue;
     }
 
-    // Headings: # through ######
+    // Headings
     const headingMatch = line.match(
       /^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$/
     );
@@ -252,7 +375,6 @@ function renderMarkdown(markdown) {
       continue;
     }
 
-    // Regular paragraph text
     flushList();
     paragraph.push(line);
   }
@@ -262,10 +384,7 @@ function renderMarkdown(markdown) {
   return blocks.join("\n");
 }
 
-// ---------------------------------------------------------------
-// Gemini summary (served by /api/summarize in app.py)
-// ---------------------------------------------------------------
-
+// Gemini summary
 const SUMMARY_URL = "/api/summarize";
 const SUMMARY_TIMEOUT_MS = 45000;
 
@@ -327,7 +446,7 @@ async function loadSummary() {
     try {
       payload = await response.json();
     } catch (error) {
-      // Non-JSON reply (for example, a server error page).
+      // The server returned a non-JSON response.
     }
 
     if (!response.ok || !payload.summary) {
@@ -353,7 +472,6 @@ async function loadSummary() {
 }
 
 async function copySummary() {
-  // Copy the original Markdown rather than the rendered HTML.
   const text = summaryMarkdown;
   let label = "Copied";
 
@@ -361,7 +479,6 @@ async function copySummary() {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
     } else {
-      // Fallback for pages not served over HTTPS or localhost.
       const helper = document.createElement("textarea");
 
       helper.value = text;
@@ -376,9 +493,7 @@ async function copySummary() {
 
       document.body.removeChild(helper);
 
-      if (!copied) {
-        throw new Error("Copy failed");
-      }
+      if (!copied) throw new Error("Copy failed");
     }
   } catch (error) {
     label = "Copy failed";

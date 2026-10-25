@@ -352,3 +352,63 @@ section h3 {
     animation-iteration-count: 1;
   }
 }
+
+/* Markdown tables */
+.markdown-table-wrapper {
+  width: 100%;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.markdown-table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.markdown-table th,
+.markdown-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-table th {
+  background: #eef6ef;
+  color: #116229;
+  font-weight: 700;
+  white-space: normal;
+}
+
+.markdown-table tbody tr:nth-child(even) {
+  background: #f8faf8;
+}
+
+.markdown-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-table td strong {
+  color: #116229;
+}
+
+.markdown-table em {
+  font-style: italic;
+}
+
+@media (max-width: 700px) {
+  .markdown-table {
+    font-size: 0.875rem;
+  }
+
+  .markdown-table th,
+  .markdown-table td {
+    padding: 0.6rem 0.75rem;
+  }
+}
