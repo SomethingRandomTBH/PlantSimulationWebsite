@@ -194,6 +194,16 @@ def run_model(inputs):
     rounded_total_leaves = int(
         np.floor(predicted_total_leaves + 0.5)
     )
+    
+    growth_lower = max(
+        0.0,
+        predicted_growth - growth_margin_of_error_90,
+    )
+
+    growth_upper = (
+        predicted_growth + growth_margin_of_error_90
+    )
+
 
     return {
         "predicted_growth_inches": round(predicted_growth, 2),
@@ -202,7 +212,71 @@ def run_model(inputs):
         "predicted_total_leaf_count": round(
             predicted_total_leaves, 2
         ),
-        "rounded_predicted_total_leaf_count": rounded_total_leaves,
+        "rounded_predicted_total_leaf_count": rounded_total_leaves, "growth_margin_of_error_inches": round(
+            growth_margin_of_error_90, 2
+        ),
+        "predicted_growth_lower_inches": round(
+            growth_lower, 2
+        ),
+        "predicted_growth_upper_inches": round(
+            growth_upper, 2
+        ),
+    }
+
+
+def run_multiweek_forecast(inputs):
+    """Predict four consecutive weekly growth periods."""
+
+    current = dict(inputs)
+    forecasts = []
+
+    starting_length = inputs["Stem_Length_Inches"]
+    starting_leaves = inputs["Leaf_Count"]
+    cumulative_growth = 0.0
+    cumulative_new_leaves = 0.0
+
+    for week in range(1, 5):
+        # Predict the next 7 days using the current simulated plant state.
+        weekly_result = run_model(current)
+
+        weekly_growth = weekly_result["predicted_growth_inches"]
+        weekly_new_leaves = (
+            weekly_growth / AVERAGE_LEAF_SPACING_INCHES
+        )
+
+        cumulative_growth += weekly_growth
+        cumulative_new_leaves += weekly_new_leaves
+
+        projected_length = starting_length + cumulative_growth
+        projected_leaves = starting_leaves + cumulative_new_leaves
+
+        forecasts.append({
+            "week": week,
+            "weekly_growth_inches": round(weekly_growth, 2),
+            "cumulative_growth_inches": round(cumulative_growth, 2),
+            "projected_stem_length_inches": round(projected_length, 2),
+            "estimated_new_leaves_this_week": round(
+                weekly_new_leaves, 2
+            ),
+            "cumulative_estimated_new_leaves": round(
+                cumulative_new_leaves, 2
+            ),
+            "projected_total_leaf_count": round(projected_leaves, 2),
+            "rounded_projected_total_leaf_count": int(
+                np.floor(projected_leaves + 0.5)
+            ),
+        })
+
+        # Carry the predicted state into the next week's prediction.
+        current["Age_Days"] += 7
+        current["Stem_Length_Inches"] = projected_length
+        current["Leaf_Count"] = projected_leaves
+
+    return {
+        "week_1": forecasts[0],
+        "week_2": forecasts[1],
+        "week_4": forecasts[3],
+        "weekly_forecasts": forecasts,
     }
 
 
@@ -410,6 +484,7 @@ def serve_pages(filename):
     return send_from_directory(PAGES_DIR, filename)
 
 
+
 @app.post("/api/predict")
 def predict():
     try:
@@ -417,7 +492,14 @@ def predict():
     except InputError as error:
         return jsonify({"error": str(error)}), 400
 
-    return jsonify(run_model(inputs))
+    # Preserve the original one-week response fields.
+    result = run_model(inputs)
+
+    # Add the sequential multiweek forecasts.
+    result.update(run_multiweek_forecast(inputs))
+
+    return jsonify(result)
+
 
 
 @app.post("/api/summarize")

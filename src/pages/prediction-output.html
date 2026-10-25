@@ -51,13 +51,14 @@
           <h2 style="text-align: center;">Your Golden Pothos Forecast</h2>
 
           <p class="lead" style="text-align: center;">
-            Model estimates for the next seven days, based on the
-            conditions you entered.
-          </p>
+          Sequential Random Forest estimates for weeks 1, 2, and 4,
+          using the simulated plant conditions from each preceding week.
+        </p>
 
           <div class="result-grid">
             <div class="result-card">
               <span class="result-label">Predicted stem growth</span>
+
 
               <div class="result-value">
                 <span id="growth-result">&mdash;</span>
@@ -65,6 +66,24 @@
               </div>
 
               <p>Estimated additional vine length over 7 days.</p>
+            </div>
+              
+            <div class="result-card result-card-highlight">
+              <span class="result-label">
+                Expected growth range (90% prediction interval)
+              </span>
+
+              <div class="result-value">
+                <span id="growth-lower-result">&mdash;</span>
+                <span class="result-unit">to</span>
+                <span id="growth-upper-result">&mdash;</span>
+                <span class="result-unit">inches</span>
+              </div>
+
+              <p>
+                A range estimated from errors on held-out calibration plants.
+                Actual growth may fall outside this range.
+              </p>
             </div>
 
             <div class="result-card">
@@ -93,6 +112,65 @@
           <h3 style="color: inherit;">How to interpret this</h3>
           <p id="result-explanation"></p>
         </section>
+
+        
+        <section id="multiweek-section">
+          <h2 style="text-align: center;">Extended Growth Forecast</h2>
+
+          <p class="lead" style="text-align: center;">
+            Each forecast builds on the simulated plant state from the
+            previous week. Environmental conditions remain unchanged.
+          </p>
+
+          <div class="result-grid">
+            <div class="result-card">
+              <span class="result-label">2-week forecast</span>
+
+              <div class="result-value">
+                <span id="week-2-length">&mdash;</span>
+                <span class="result-unit">inches</span>
+                <p id="week-2-range-note" class="growth-range-note"></p>
+              </div>
+
+              <p>Projected total vine length after 14 days.</p>
+
+              <p>
+                Cumulative growth:
+                <strong><span id="week-2-growth">&mdash;</span> inches</strong>
+              </p>
+
+              <p>
+                Projected total leaves:
+                <strong><span id="week-2-leaves">&mdash;</span></strong>
+              </p>
+            </div>
+
+            <div class="result-card result-card-highlight">
+              <span class="result-label">4-week forecast</span>
+
+              <div class="result-value">
+                <span id="week-4-length">&mdash;</span>
+                <span class="result-unit">inches</span>
+                <p id="week-4-range-note" class="growth-range-note"></p>
+              </div>
+
+              <p>Projected total vine length after 28 days.</p>
+
+              <p>
+                Cumulative growth:
+                <strong><span id="week-4-growth">&mdash;</span> inches</strong>
+              </p>
+
+              <p>
+                Projected total leaves:
+                <strong><span id="week-4-leaves">&mdash;</span></strong>
+              </p>
+            </div>
+          </div>
+
+          <p id="multiweek-explanation" class="lead"></p>
+        </section>
+
 
         <section id="summary-section" aria-labelledby="summary-title">
           <h2 id="summary-title" style="text-align: center;">AI-Generated Summary</h2>

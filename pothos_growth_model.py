@@ -17,7 +17,7 @@ NUM_WEEKS = 104
 PERIOD_DAYS = 7
 OUTPUT_FILE = "synthetic_pothos_growth.csv"
 
-BASE_GROWTH_INCHES_PER_DAY = 0.4
+BASE_GROWTH_INCHES_PER_DAY = 0.2
 OPTIMAL_LIGHT_LUX = 2500.0
 OPTIMAL_TEMP_F = 80.0
 TEMP_STD_F = 15.0
@@ -26,6 +26,11 @@ OPTIMAL_WATER_ML_PER_DAY_FOR_6_INCH_POT = 43.0
 MIN_SIZE_MODIFIER = 0.30
 CROWDING_STRENGTH = 0.50
 MIN_CROWDING_MODIFIER = 0.35
+
+# Plant age-based growth settings
+MATURITY_START_DAYS = 90
+MIN_AGE_GROWTH_MODIFIER = 0.15
+AGE_GROWTH_CURVE_POWER = 1.7
 
 # Illustrative assumptions; calibrate with observed plants.
 AVERAGE_LEAF_SPACING_INCHES = 1.2
@@ -86,6 +91,27 @@ def calculate_size_modifier(stem_inches):
         1.0 + max(0.0, stem_inches) / 48.0
     )
     return float(max(MIN_SIZE_MODIFIER, modifier))
+
+def calculate_age_modifier(age_days):
+    """
+    Gradually increases growth as the plant matures.
+
+    Plants start with reduced growth and reach their
+    full age-based growth rate at MATURITY_START_DAYS.
+    """
+    if age_days >= MATURITY_START_DAYS:
+        return 1.0
+
+    maturity_progress = max(
+        0.0,
+        age_days / MATURITY_START_DAYS
+    )
+
+    modifier = MIN_AGE_GROWTH_MODIFIER + (
+        1.0 - MIN_AGE_GROWTH_MODIFIER
+    ) * (maturity_progress ** AGE_GROWTH_CURVE_POWER)
+
+    return float(modifier)
 
 
 def sample_leaf_spacing():
@@ -151,6 +177,7 @@ for plant_id in range(1, NUM_PLANTS + 1):
         humidity_mod = calculate_humidity_modifier(humidity)
         pot_mod = calculate_pot_modifier(pot_inches, leaf_count)
         size_mod = calculate_size_modifier(stem_inches)
+        age_mod = calculate_age_modifier(starting_age)
 
         efficiency = (
             light_mod
@@ -159,6 +186,7 @@ for plant_id in range(1, NUM_PLANTS + 1):
             * humidity_mod
             * pot_mod
             * size_mod
+            * age_mod
         )
 
         tip_multiplier = np.sqrt(max(1, active_tips))

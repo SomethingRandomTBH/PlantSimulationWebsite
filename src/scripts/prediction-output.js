@@ -26,14 +26,61 @@ function loadPrediction() {
   }
 }
 
-function showResults(result) {
-  const growth = Number(result.predicted_growth_inches).toFixed(2);
-  const leaves = Number(result.predicted_total_leaf_count).toFixed(2);
-  const rounded = String(result.rounded_predicted_total_leaf_count);
 
-  document.getElementById("growth-result").textContent = growth;
-  document.getElementById("leaf-result").textContent = leaves;
-  document.getElementById("rounded-leaf-result").textContent = rounded;
+function showResults(result) {
+  const growth = Number(
+    result.predicted_growth_inches
+  ).toFixed(2);
+
+  const leaves = Number(
+    result.predicted_total_leaf_count
+  ).toFixed(2);
+
+  const rounded = String(
+    result.rounded_predicted_total_leaf_count
+  );
+
+  document.getElementById("growth-result").textContent =
+    growth;
+
+  document.getElementById("leaf-result").textContent =
+    leaves;
+
+  document.getElementById("rounded-leaf-result").textContent =
+    rounded;
+
+  const lowerElement = document.getElementById(
+    "growth-lower-result"
+  );
+
+  const upperElement = document.getElementById(
+    "growth-upper-result"
+  );
+
+  const margin = Number(
+    result.growth_margin_of_error_inches
+  );
+
+  const lower = Number(
+    result.predicted_growth_lower_inches
+  );
+
+  const upper = Number(
+    result.predicted_growth_upper_inches
+  );
+
+  if (
+    Number.isFinite(margin) &&
+    Number.isFinite(lower) &&
+    Number.isFinite(upper)
+  ) {
+    lowerElement.textContent = lower.toFixed(2);
+    upperElement.textContent = upper.toFixed(2);
+  } else {
+    // Handles older predictions saved before intervals were added.
+    lowerElement.textContent = "Unavailable";
+    upperElement.textContent = "Unavailable";
+  }
 
   document.getElementById("result-explanation").textContent =
     `The model estimates ${growth} inches of additional vine growth ` +
@@ -42,6 +89,80 @@ function showResults(result) {
     `The leaf estimate is a prediction of total leaves, not the number ` +
     `of new leaves next week.`;
 }
+
+
+
+function showMultiweekForecast(result) {
+  const forecasts = result.weekly_forecasts;
+
+  if (!Array.isArray(forecasts)) {
+    document.getElementById("multiweek-explanation").textContent =
+      "These extended forecasts are not available for this saved " +
+      "prediction. Please return to the prediction page and run a new forecast.";
+    return;
+  }
+
+  const week2 = forecasts.find((item) => item.week === 2);
+  const week4 = forecasts.find((item) => item.week === 4);
+
+  if (!week2 || !week4) {
+    document.getElementById("multiweek-explanation").textContent =
+      "The extended forecast could not be loaded. Please run a new prediction.";
+    return;
+  }
+
+  document.getElementById("week-2-length").textContent =
+    Number(week2.projected_stem_length_inches).toFixed(2);
+
+  document.getElementById("week-2-growth").textContent =
+    Number(week2.cumulative_growth_inches).toFixed(2);
+
+  document.getElementById("week-2-leaves").textContent =
+    String(week2.rounded_projected_total_leaf_count);
+
+  document.getElementById("week-4-length").textContent =
+    Number(week4.projected_stem_length_inches).toFixed(2);
+
+  document.getElementById("week-4-growth").textContent =
+    Number(week4.cumulative_growth_inches).toFixed(2);
+
+  document.getElementById("week-4-leaves").textContent =
+    String(week4.rounded_projected_total_leaf_count);
+
+  document.getElementById("multiweek-explanation").textContent =
+    "The 2-week and 4-week results are sequential projections. " +
+    "Each simulated week updates plant age and vine length before " +
+    "the next Random Forest prediction. New leaves are estimated " +
+    "from predicted growth using the 1.2-inch average leaf-spacing " +
+    "assumption; they are not independently predicted by the model.";
+      // Show the calibrated one-week error margin as a reference
+  // for the sequential multiweek forecasts.
+  const margin = Number(result.growth_margin_of_error_inches);
+
+  const week2Note = document.getElementById("week-2-range-note");
+  const week4Note = document.getElementById("week-4-range-note");
+
+  if (Number.isFinite(margin) && margin >= 0) {
+    const formattedMargin = margin.toFixed(2);
+
+    week2Note.textContent =
+      `Reference margin: ±${formattedMargin} inches per weekly ` +
+      `prediction. Uncertainty can accumulate over two weeks; ` +
+      `this is not a calibrated 90% interval for total growth.`;
+
+    week4Note.textContent =
+      `Reference margin: ±${formattedMargin} inches per weekly ` +
+      `prediction. Uncertainty can accumulate over four weeks; ` +
+      `this is not a calibrated 90% interval for total growth.`;
+  } else {
+    week2Note.textContent =
+      "A calibrated weekly error margin is unavailable. Run a new prediction.";
+
+    week4Note.textContent =
+      "A calibrated weekly error margin is unavailable. Run a new prediction.";
+  }
+}
+
 
 function showInputs(inputs) {
   const body = document.getElementById("input-summary");
@@ -684,6 +805,7 @@ const saved = loadPrediction();
 
 if (saved && saved.result) {
   showResults(saved.result);
+  showMultiweekForecast(saved.result);
   showInputs(saved.inputs || {});
 
   output.hidden = false;
