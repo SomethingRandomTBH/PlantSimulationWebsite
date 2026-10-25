@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Botanists' Plant Simulation</title>
     <link rel="stylesheet" href="styles/style.css">
+    <script src="../scripts/main.js"></script>
   </head>
 
   <body>
@@ -24,6 +25,20 @@
         <a href="pages/research.html">Research</a>
         <a href="pages/prediction.html">Predict Growth</a>
       </nav>
+      <div class="theme-control">
+        <label class="theme-switch" for="theme-toggle">
+          <span class="theme-switch-label">Dark mode</span>
+          <input
+            type="checkbox"
+            id="theme-toggle"
+            role="switch"
+            aria-label="Toggle dark mode"
+          >
+          <span class="theme-switch-track" aria-hidden="true">
+            <span class="theme-switch-thumb"></span>
+          </span>
+        </label>
+      </div>
     </header>
 
     <main>
@@ -64,6 +79,5 @@
       <p>&copy; 2026 Plant Simulation</p>
     </footer>
 
-    <script src="scripts/main.js"></script>
   </body>
 </html>

@@ -1,5 +1,20 @@
 /* Prediction page: shared site styling */
 
+html {
+  background-color: #f3f5f0;
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  background-color: #171d19;
+  color-scheme: dark;
+}
+
+html[data-theme="light"] {
+  background-color: #f3f5f0;
+  color-scheme: light;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -407,4 +422,192 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Theme color variables */
+
+:root {
+  --page-bg: #f5f7f1;
+  --surface-bg: #ffffff;
+  --surface-secondary: #f7f9f4;
+
+  --text-main: #26352a;
+  --text-muted: #68756a;
+  --heading-color: #234b35;
+
+  --accent: #47734d;
+  --border-color: #dce4d7;
+  --shadow-color: rgb(30 60 40 / 6%);
+  --focus-color: #6b986e;
+}
+
+/* Dark theme variables */
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page-bg: #151c17;
+  --surface-bg: #202a23;
+  --surface-secondary: #27342b;
+
+  --text-main: #e1e9e1;
+  --text-muted: #b0bdb1;
+  --heading-color: #d5e9d7;
+
+  --accent: #83c691;
+  --border-color: #405344;
+  --shadow-color: rgb(0 0 0 / 25%);
+  --focus-color: #9bd3a4;
+}
+
+/* Dark-mode overrides for the prediction form and results page */
+
+html[data-theme="dark"] body {
+  color: var(--text-main);
+  background-color: var(--page-bg);
+}
+
+html[data-theme="dark"] .site-header,
+html[data-theme="dark"] .site-footer {
+  color: #e4ece4;
+  background-color: #19291e;
+}
+
+html[data-theme="dark"] .site-nav a {
+  color: #e4ece4;
+}
+
+html[data-theme="dark"] .site-nav a:hover,
+html[data-theme="dark"] .site-nav a:focus-visible {
+  background-color: #344a38;
+}
+
+html[data-theme="dark"] .site-nav a.active {
+  color: #d8ead9;
+  background-color: #344a38;
+}
+
+html[data-theme="dark"] .hero {
+  background-color: #29372d;
+}
+
+html[data-theme="dark"] .hero h1,
+html[data-theme="dark"] .hero h2 {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .hero-description {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .eyebrow,
+html[data-theme="dark"] .step-number {
+  color: var(--accent);
+}
+
+html[data-theme="dark"] .forecast-tag {
+  color: var(--heading-color);
+  background-color: #222b25;
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .panel {
+  background-color: var(--surface-bg);
+  border-color: var(--border-color);
+  box-shadow: 0 3px 12px var(--shadow-color);
+}
+
+html[data-theme="dark"] .panel-heading h2,
+html[data-theme="dark"] .empty-state h3,
+html[data-theme="dark"] .result-summary h3 {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .panel-heading p,
+html[data-theme="dark"] .field small,
+html[data-theme="dark"] .form-note,
+html[data-theme="dark"] .result-card p {
+  color: var(--text-muted);
+}
+
+html[data-theme="dark"] .field label {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .field input,
+html[data-theme="dark"] .field select {
+  color: var(--text-main);
+  background-color: #1c251f;
+  border-color: #465747;
+}
+
+html[data-theme="dark"] .field input:focus,
+html[data-theme="dark"] .field select:focus {
+  outline-color: var(--focus-color);
+}
+
+html[data-theme="dark"] .primary-button {
+  color: #17251a;
+  background-color: #83c691;
+}
+
+html[data-theme="dark"] .primary-button:hover {
+  background-color: #a0d9aa;
+}
+
+html[data-theme="dark"] .secondary-button {
+  color: var(--heading-color);
+  background-color: #344438;
+}
+
+html[data-theme="dark"] .secondary-button:hover {
+  background-color: #405744;
+}
+
+html[data-theme="dark"] .result-card {
+  background-color: var(--surface-secondary);
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .result-card-highlight {
+  background-color: #304635;
+  border-color: #496c50;
+}
+
+html[data-theme="dark"] .result-label {
+  color: var(--text-muted);
+}
+
+html[data-theme="dark"] .result-value {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .result-unit {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .leaf-symbol {
+  color: var(--accent);
+}
+
+html[data-theme="dark"] .error-message {
+  color: #ffaaa5;
+}
+
+html[data-theme="dark"] .spinner {
+  border-color: #3b4b3e;
+  border-top-color: var(--accent);
+}
+
+html[data-theme="dark"] .disclaimer {
+  background-color: #29372d;
+  border-left-color: #83c691;
+}
+
+html[data-theme="dark"] .disclaimer strong {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .disclaimer p {
+  color: var(--text-main);
 }

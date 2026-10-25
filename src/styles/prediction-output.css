@@ -1,0 +1,624 @@
+/*
+  Extra styles for the prediction output page.
+  Builds on styles/style.css (header, nav, main, section, footer).
+*/
+
+[hidden] {
+  display: none !important;
+}
+
+/* Section spacing */
+main section + section,
+#output section + section {
+  margin-top: 2rem;
+}
+
+#output {
+  display: block;
+}
+
+section h3 {
+  color: #116229;
+  margin: 1.75rem 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.lead {
+  color: #555555;
+  margin-bottom: 1.75rem;
+}
+
+/* Result cards */
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.result-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.result-card-highlight {
+  background: #eef6ef;
+  border-color: #b9d8bf;
+}
+
+.result-label {
+  display: block;
+  color: #555555;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.result-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  color: #116229;
+  font-size: 2.4rem;
+  font-weight: bold;
+  line-height: 1.2;
+}
+
+.result-unit {
+  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.result-card p {
+  color: #555555;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Inputs summary table */
+.input-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.input-table th,
+.input-table td {
+  padding: 0.75rem 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.input-table th {
+  font-weight: normal;
+  color: #555555;
+}
+
+.input-table td {
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: right;
+}
+
+/* Buttons */
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.75rem;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #116229;
+  border-radius: 8px;
+  background-color: #116229;
+  color: #F4F1EA;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  background-color: #0c4a1f;
+  border-color: #0c4a1f;
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: #116229;
+}
+
+.button-secondary:hover,
+.button-secondary:focus-visible {
+  background-color: #eef6ef;
+  color: #116229;
+  border-color: #116229;
+}
+
+/* Gemini summary box */
+.llm-box {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.llm-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.5rem 0.75rem 0.5rem 1.25rem;
+  background: #eef6ef;
+  border-bottom: 1px solid #b9d8bf;
+}
+
+.llm-box-label {
+  color: #116229;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+/* Holds the Reprompt and Copy buttons on the right of the header */
+.llm-box-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid #b9d8bf;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #116229;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.copy-button:hover:not(:disabled),
+.copy-button:focus-visible {
+  background: #dcebdf;
+}
+
+.copy-button:disabled {
+  opacity: 0.5;
+  filter: grayscale(1);
+  cursor: not-allowed;
+}
+
+.llm-box-body {
+  min-height: 7rem;
+  padding: 1.25rem 1.5rem;
+  color: #2c3e50;
+}
+
+.llm-text {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.llm-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #555555;
+}
+
+.llm-spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #dcebdf;
+  border-top-color: #116229;
+  border-radius: 50%;
+  animation: llm-spin 0.8s linear infinite;
+}
+
+@keyframes llm-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.llm-error {
+  color: #a12b2b;
+}
+
+.llm-retry {
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border: 2px solid #116229;
+  border-radius: 8px;
+  background: transparent;
+  color: #116229;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.llm-retry:hover,
+.llm-retry:focus-visible {
+  background: #eef6ef;
+}
+
+/* Rendered Markdown */
+.markdown-body {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: #116229;
+  line-height: 1.3;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.markdown-body h1 {
+  font-size: 1.6rem;
+}
+
+.markdown-body h2 {
+  font-size: 1.4rem;
+}
+
+.markdown-body h3 {
+  font-size: 1.2rem;
+}
+
+.markdown-body p {
+  margin: 0 0 1rem;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+.markdown-body li {
+  margin-bottom: 0.35rem;
+}
+
+.markdown-body strong {
+  font-weight: 700;
+}
+
+.markdown-body em {
+  font-style: italic;
+}
+
+.markdown-body del {
+  text-decoration: line-through;
+}
+
+.markdown-body blockquote {
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  border-left: 4px solid #b9d8bf;
+  background: #f5f8f5;
+  color: #555555;
+}
+
+.markdown-body code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: #eef1ee;
+  font-family: Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.markdown-body pre {
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  background: #eef1ee;
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background: none;
+}
+
+.markdown-body hr {
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+/* Markdown alignment wrappers */
+.markdown-aligned {
+  width: 100%;
+  margin: 0.75rem 0;
+}
+
+/* Inherit alignment for headings */
+.markdown-aligned > h1,
+.markdown-aligned > h2,
+.markdown-aligned > h3,
+.markdown-aligned > h4,
+.markdown-aligned > h5,
+.markdown-aligned > h6 {
+  text-align: inherit;
+}
+
+/* Center the table itself without centering every cell */
+.markdown-aligned[style*="text-align: center"] > .markdown-table-wrapper {
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.25rem auto;
+}
+
+/* Keep tables responsive on small screens */
+.markdown-aligned > .markdown-table-wrapper {
+  overflow-x: auto;
+}
+
+/* Markdown tables */
+.markdown-table-wrapper {
+  width: 100%;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.markdown-table {
+  width: 100%;
+  min-width: 420px;
+  border-collapse: collapse;
+  background: #ffffff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.markdown-table th,
+.markdown-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+
+.markdown-table th {
+  background: #eef6ef;
+  color: #116229;
+  font-weight: 700;
+  white-space: normal;
+}
+
+.markdown-table tbody tr:nth-child(even) {
+  background: #f8faf8;
+}
+
+.markdown-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-table td strong {
+  color: #116229;
+}
+
+.markdown-table em {
+  font-style: italic;
+}
+
+/* Responsive layout */
+@media (max-width: 700px) {
+  .result-value {
+    font-size: 2rem;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .markdown-table {
+    font-size: 0.875rem;
+  }
+
+  .markdown-table th,
+  .markdown-table td {
+    padding: 0.6rem 0.75rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .llm-spinner {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}
+
+/* Dark-mode overrides for forecast results and Gemini Markdown */
+
+html[data-theme="dark"] .lead,
+html[data-theme="dark"] .result-label,
+html[data-theme="dark"] .result-card p,
+html[data-theme="dark"] .input-table th {
+  color: var(--text-muted);
+}
+
+html[data-theme="dark"] .result-card {
+  background-color: var(--surface-secondary);
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .result-card-highlight {
+  background-color: #304635;
+  border-color: #496c50;
+}
+
+html[data-theme="dark"] .result-value,
+html[data-theme="dark"] .result-card td,
+html[data-theme="dark"] .input-table td {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .result-unit {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .input-table th,
+html[data-theme="dark"] .input-table td {
+  border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .button {
+  color: #17251a;
+  background-color: #83c691;
+  border-color: #83c691;
+}
+
+html[data-theme="dark"] .button:hover,
+html[data-theme="dark"] .button:focus-visible {
+  color: #142018;
+  background-color: #a0d9aa;
+  border-color: #a0d9aa;
+}
+
+html[data-theme="dark"] .button-secondary {
+  color: var(--accent);
+  background-color: transparent;
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .button-secondary:hover,
+html[data-theme="dark"] .button-secondary:focus-visible {
+  color: #d5eed8;
+  background-color: #293d2e;
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .llm-box {
+  background-color: var(--surface-bg);
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .llm-box-header {
+  background-color: #293b2e;
+  border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .llm-box-label {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .llm-box-body {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .copy-button {
+  color: var(--heading-color);
+  background-color: #222b25;
+  border-color: #496c50;
+}
+
+html[data-theme="dark"] .copy-button:hover:not(:disabled),
+html[data-theme="dark"] .copy-button:focus-visible {
+  background-color: #344a38;
+}
+
+html[data-theme="dark"] .llm-loading {
+  color: var(--text-muted);
+}
+
+html[data-theme="dark"] .llm-spinner {
+  border-color: #3b4b3e;
+  border-top-color: var(--accent);
+}
+
+html[data-theme="dark"] .llm-error {
+  color: #ffaaa5;
+}
+
+html[data-theme="dark"] .llm-retry {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .llm-retry:hover,
+html[data-theme="dark"] .llm-retry:focus-visible {
+  background-color: #293d2e;
+}
+
+html[data-theme="dark"] .markdown-body h1,
+html[data-theme="dark"] .markdown-body h2,
+html[data-theme="dark"] .markdown-body h3,
+html[data-theme="dark"] .markdown-body h4,
+html[data-theme="dark"] .markdown-body h5,
+html[data-theme="dark"] .markdown-body h6 {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .markdown-body blockquote {
+  color: var(--text-muted);
+  background-color: #29332c;
+  border-left-color: #55795b;
+}
+
+html[data-theme="dark"] .markdown-body code {
+  color: #dbe9dc;
+  background-color: #303a32;
+}
+
+html[data-theme="dark"] .markdown-body pre {
+  color: #dbe9dc;
+  background-color: #1b231d;
+}
+
+html[data-theme="dark"] .markdown-body hr {
+  border-top-color: var(--border-color);
+}
+
+html[data-theme="dark"] .markdown-table-wrapper {
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .markdown-table {
+  color: var(--text-main);
+  background-color: var(--surface-bg);
+}
+
+html[data-theme="dark"] .markdown-table th,
+html[data-theme="dark"] .markdown-table td {
+  border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .markdown-table th {
+  color: var(--heading-color);
+  background-color: #293b2e;
+}
+
+html[data-theme="dark"] .markdown-table tbody tr:nth-child(even) {
+  background-color: #28312a;
+}
+
+html[data-theme="dark"] .markdown-table tbody tr:nth-child(odd) {
+  background-color: #222b25;
+}
+
+html[data-theme="dark"] .markdown-table td strong {
+  color: var(--heading-color);
+}
