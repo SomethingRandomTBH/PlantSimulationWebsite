@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/prediction-output.css">
+    <script src="../scripts/main.js"></script>
   </head>
 
   <body>
@@ -47,9 +48,9 @@
       <!-- Shown when a prediction is available -->
       <div id="output" hidden>
         <section>
-          <h2>Your Golden Pothos Forecast</h2>
+          <h2 style="text-align: center;">Your Golden Pothos Forecast</h2>
 
-          <p class="lead">
+          <p class="lead" style="text-align: center;">
             Model estimates for the next seven days, based on the
             conditions you entered.
           </p>
@@ -89,45 +90,77 @@
             </div>
           </div>
 
-          <h3>How to interpret this</h3>
+          <h3 style="color: inherit;">How to interpret this</h3>
           <p id="result-explanation"></p>
         </section>
 
         <section id="summary-section" aria-labelledby="summary-title">
-          <h2 id="summary-title">AI-Generated Summary</h2>
+          <h2 id="summary-title" style="text-align: center;">AI-Generated Summary</h2>
 
-          <p class="lead">
-            Provided by Google Gemini. Gemini is AI and has lacks important information inputs like vision! It is important to double check information provided!
+          <p class="lead" style="text-align: center;">
+            <em>
+              Provided by Google Gemini. Note: Gemini is AI and in the current environment lacks important inputs,
+              such as vision. It is important to double-check the information provided.
+            </em>
           </p>
 
           <div class="llm-box">
             <div class="llm-box-header">
               <span class="llm-box-label">Gemini summary</span>
 
-              <button
-                id="copy-button"
-                class="copy-button"
-                type="button"
-                aria-label="Copy summary to clipboard"
-                disabled
-              >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
+              <div class="llm-box-actions">
+                <!-- Disabled while a summary is being generated. -->
+                <button
+                  id="reprompt-button"
+                  class="copy-button"
+                  type="button"
+                  aria-label="Generate a new summary"
+                  disabled
                 >
-                  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                </svg>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <polyline points="23 4 23 10 17 10"></polyline>
+                    <polyline points="1 20 1 14 7 14"></polyline>
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                  </svg>
 
-                <span id="copy-label">Copy</span>
-              </button>
+                  <span id="reprompt-label">Regenerate</span>
+                </button>
+
+                <button
+                  id="copy-button"
+                  class="copy-button"
+                  type="button"
+                  aria-label="Copy summary to clipboard"
+                  disabled
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+
+                  <span id="copy-label">Copy</span>
+                </button>
+              </div>
             </div>
 
             <div class="llm-box-body" aria-live="polite">
@@ -168,14 +201,18 @@
         </section>
 
         <section>
-          <h2>About These Estimates</h2>
+          <h2 style="font-size: 1.5rem; font-weight: normal; text-align: center; color: inherit;">
+            <em>About These Estimates</em>
+          </h2>
 
-          <p>
-            This model was trained on synthetic pothos data. Its reported
-            accuracy measures performance on simulated plants and may not
-            reflect real-world accuracy. The healthy-plant simulation assumes
-            no leaf loss. Predictions are estimates, not guaranteed
-            biological outcomes.
+          <p class="lead" style="text-align: center;">
+            <em>
+              This model was trained on synthetic pothos data. Its reported
+              accuracy measures performance on simulated plants and may not
+              reflect real-world accuracy. The healthy-plant simulation assumes
+              no leaf loss. Predictions are estimates, not guaranteed
+              biological outcomes. Lux is also not a accurate way to describe incoming light for a plant, however it can be used as a rough estimate.
+            </em>
           </p>
         </section>
       </div>
@@ -185,7 +222,6 @@
       <p>&copy; 2026 Plant Simulation</p>
     </footer>
 
-    <script src="../scripts/main.js"></script>
     <script src="../scripts/prediction-output.js"></script>
   </body>
 </html>

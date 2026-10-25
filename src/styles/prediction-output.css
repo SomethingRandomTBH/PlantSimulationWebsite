@@ -7,7 +7,7 @@
   display: none !important;
 }
 
-/* style.css gives every section a card look; add spacing between cards */
+/* Section spacing */
 main section + section,
 #output section + section {
   margin-top: 2rem;
@@ -152,6 +152,7 @@ section h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 0.5rem 0.75rem 0.5rem 1.25rem;
   background: #eef6ef;
@@ -162,6 +163,14 @@ section h3 {
   color: #116229;
   font-size: 0.85rem;
   font-weight: bold;
+}
+
+/* Holds the Reprompt and Copy buttons on the right of the header */
+.llm-box-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
 }
 
 .copy-button {
@@ -187,6 +196,7 @@ section h3 {
 
 .copy-button:disabled {
   opacity: 0.5;
+  filter: grayscale(1);
   cursor: not-allowed;
 }
 
@@ -335,22 +345,32 @@ section h3 {
   margin: 1.5rem 0;
 }
 
-@media (max-width: 700px) {
-  .result-value {
-    font-size: 2rem;
-  }
-
-  .button {
-    width: 100%;
-    text-align: center;
-  }
+/* Markdown alignment wrappers */
+.markdown-aligned {
+  width: 100%;
+  margin: 0.75rem 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .llm-spinner {
-    animation-duration: 0.01ms;
-    animation-iteration-count: 1;
-  }
+/* Inherit alignment for headings */
+.markdown-aligned > h1,
+.markdown-aligned > h2,
+.markdown-aligned > h3,
+.markdown-aligned > h4,
+.markdown-aligned > h5,
+.markdown-aligned > h6 {
+  text-align: inherit;
+}
+
+/* Center the table itself without centering every cell */
+.markdown-aligned[style*="text-align: center"] > .markdown-table-wrapper {
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.25rem auto;
+}
+
+/* Keep tables responsive on small screens */
+.markdown-aligned > .markdown-table-wrapper {
+  overflow-x: auto;
 }
 
 /* Markdown tables */
@@ -402,7 +422,17 @@ section h3 {
   font-style: italic;
 }
 
+/* Responsive layout */
 @media (max-width: 700px) {
+  .result-value {
+    font-size: 2rem;
+  }
+
+  .button {
+    width: 100%;
+    text-align: center;
+  }
+
   .markdown-table {
     font-size: 0.875rem;
   }
@@ -411,4 +441,184 @@ section h3 {
   .markdown-table td {
     padding: 0.6rem 0.75rem;
   }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .llm-spinner {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+  }
+}
+
+/* Dark-mode overrides for forecast results and Gemini Markdown */
+
+html[data-theme="dark"] .lead,
+html[data-theme="dark"] .result-label,
+html[data-theme="dark"] .result-card p,
+html[data-theme="dark"] .input-table th {
+  color: var(--text-muted);
+}
+
+html[data-theme="dark"] .result-card {
+  background-color: var(--surface-secondary);
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .result-card-highlight {
+  background-color: #304635;
+  border-color: #496c50;
+}
+
+html[data-theme="dark"] .result-value,
+html[data-theme="dark"] .result-card td,
+html[data-theme="dark"] .input-table td {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .result-unit {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .input-table th,
+html[data-theme="dark"] .input-table td {
+  border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .button {
+  color: #17251a;
+  background-color: #83c691;
+  border-color: #83c691;
+}
+
+html[data-theme="dark"] .button:hover,
+html[data-theme="dark"] .button:focus-visible {
+  color: #142018;
+  background-color: #a0d9aa;
+  border-color: #a0d9aa;
+}
+
+html[data-theme="dark"] .button-secondary {
+  color: var(--accent);
+  background-color: transparent;
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .button-secondary:hover,
+html[data-theme="dark"] .button-secondary:focus-visible {
+  color: #d5eed8;
+  background-color: #293d2e;
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .llm-box {
+  background-color: var(--surface-bg);
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .llm-box-header {
+  background-color: #293b2e;
+  border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .llm-box-label {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .llm-box-body {
+  color: var(--text-main);
+}
+
+html[data-theme="dark"] .copy-button {
+  color: var(--heading-color);
+  background-color: #222b25;
+  border-color: #496c50;
+}
+
+html[data-theme="dark"] .copy-button:hover:not(:disabled),
+html[data-theme="dark"] .copy-button:focus-visible {
+  background-color: #344a38;
+}
+
+html[data-theme="dark"] .llm-loading {
+  color: var(--text-muted);
+}
+
+html[data-theme="dark"] .llm-spinner {
+  border-color: #3b4b3e;
+  border-top-color: var(--accent);
+}
+
+html[data-theme="dark"] .llm-error {
+  color: #ffaaa5;
+}
+
+html[data-theme="dark"] .llm-retry {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+html[data-theme="dark"] .llm-retry:hover,
+html[data-theme="dark"] .llm-retry:focus-visible {
+  background-color: #293d2e;
+}
+
+html[data-theme="dark"] .markdown-body h1,
+html[data-theme="dark"] .markdown-body h2,
+html[data-theme="dark"] .markdown-body h3,
+html[data-theme="dark"] .markdown-body h4,
+html[data-theme="dark"] .markdown-body h5,
+html[data-theme="dark"] .markdown-body h6 {
+  color: var(--heading-color);
+}
+
+html[data-theme="dark"] .markdown-body blockquote {
+  color: var(--text-muted);
+  background-color: #29332c;
+  border-left-color: #55795b;
+}
+
+html[data-theme="dark"] .markdown-body code {
+  color: #dbe9dc;
+  background-color: #303a32;
+}
+
+html[data-theme="dark"] .markdown-body pre {
+  color: #dbe9dc;
+  background-color: #1b231d;
+}
+
+html[data-theme="dark"] .markdown-body hr {
+  border-top-color: var(--border-color);
+}
+
+html[data-theme="dark"] .markdown-table-wrapper {
+  border-color: var(--border-color);
+}
+
+html[data-theme="dark"] .markdown-table {
+  color: var(--text-main);
+  background-color: var(--surface-bg);
+}
+
+html[data-theme="dark"] .markdown-table th,
+html[data-theme="dark"] .markdown-table td {
+  border-bottom-color: var(--border-color);
+}
+
+html[data-theme="dark"] .markdown-table th {
+  color: var(--heading-color);
+  background-color: #293b2e;
+}
+
+html[data-theme="dark"] .markdown-table tbody tr:nth-child(even) {
+  background-color: #28312a;
+}
+
+html[data-theme="dark"] .markdown-table tbody tr:nth-child(odd) {
+  background-color: #222b25;
+}
+
+html[data-theme="dark"] .markdown-table td strong {
+  color: var(--heading-color);
 }
