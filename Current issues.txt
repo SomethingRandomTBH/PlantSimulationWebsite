@@ -1,7 +1,6 @@
 Current issues:
-	1: Changing tabs/pages removes header tabs
+	1: Changing tabs/pages removes header tabs also in some tabs changes the size of the top page header tile 
 	2: (optional) Phones make tables in summary go out of bounds. Image on homepage gets cropped when on a phone.
-	3: Fix low res header image
+	3: Fix the low res header image
 	4: In the predict growth tab there is a redundant 2nd section and section numbers. Then the "Your plant" section should be centered.
 	5: Should allow for 1 and 2 week forecasts
-	6: Code a dark mode switch

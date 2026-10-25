@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+from datetime import datetime
 
 import joblib
 import numpy as np
@@ -249,6 +250,9 @@ def build_user_prompt(inputs, outputs):
     )
 
     lines = [
+        "Current date and time: "
+        f"{datetime.now().astimezone().strftime('%A, %B %d, %Y, %I:%M %p %Z')}",
+        "",
         "CONDITIONS ENTERED BY THE USER",
         f"Plant age: {fmt(inputs['Age_Days'])} days",
         f"Current vine length: {fmt(inputs['Stem_Length_Inches'])} inches",
@@ -289,6 +293,10 @@ def extract_text(data):
         for part in parts
         if not part.get("thought")
     ).strip()
+
+    # Gemini sometimes writes HTML entities such as "&nbsp;" as spacing.
+    # The page escapes raw HTML, so they would show up as literal text.
+    text = text.replace("&nbsp;", " ")
 
     if not text:
         app.logger.error(
