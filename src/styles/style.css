@@ -1,26 +1,312 @@
-/* ==========================================================================
-   STYLE.CSS — Master Stylesheet Entry Point
-   Imports modular design tokens, base, layout, background, components, & pages.
-   ========================================================================== */
+html {
+  background-color: #f3f5f0;
+  color-scheme: light;
+}
 
-@import url("./tokens.css");
-@import url("./base.css");
-@import url("./layout.css");
-@import url("./background.css");
+html[data-theme="dark"] {
+  background-color: #171d19;
+  color-scheme: dark;
+}
 
-@import url("./components/topbar.css");
-@import url("./components/footer.css");
-@import url("./components/button.css");
-@import url("./components/card.css");
-@import url("./components/tile.css");
-@import url("./components/field.css");
-@import url("./components/pill.css");
-@import url("./components/upload.css");
-@import url("./components/gemini-box.css");
+html[data-theme="light"] {
+  background-color: #f3f5f0;
+  color-scheme: light;
+}
 
-@import url("./pages/home.css");
-@import url("./pages/predict.css");
-@import url("./pages/about.css");
-@import url("./pages/plan.css");
-@import url("./pages/team.css");
-@import url("./pages/research.css");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.7;
+  color: #333333;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #116229;
+  color: #F4F1EA;
+  padding: 1.5rem;
+  text-align: center;
+  background-image: url("../images/vines.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: scroll;
+}
+
+header h1 {
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+nav a {
+  color: #F4F1EA;
+  text-decoration: none;
+  margin: 0 10px;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #d8e8d5;
+  text-decoration: underline;
+}
+
+/* Main content container */
+
+/* Main content layout */
+main {
+  flex: 1;
+  max-width: 1250px;
+  width: 100%;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+/* Text on the left, larger image card on the right */
+.main {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Larger text box */
+section {
+  background: #ffffff;
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.07);
+  min-width: 0;
+}
+
+section h2 {
+  color: #2c3e50;
+  margin-bottom: 1.25rem;
+  font-size: 1.8rem;
+}
+
+/* Larger photo card */
+.photo-card {
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  min-width: 0;
+}
+
+/* Scale up the image */
+.photo-card .image-slot {
+  display: block;
+  width: 100%;
+  height: 640px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Caption beneath the image */
+.photo-caption {
+  padding: 1.5rem;
+}
+
+.photo-caption h3 {
+  color: #116229;
+  margin-bottom: 0.5rem;
+  font-size: 1.35rem;
+}
+
+.photo-caption p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #555555;
+}
+
+/* Mobile layout */
+@media (max-width: 700px) {
+  .main {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .photo-card .image-slot {
+    height: 320px;
+  }
+
+  section {
+    padding: 1.75rem;
+  }
+}
+
+/* ==================================================
+   Theme variables
+   ================================================== */
+
+:root {
+  color-scheme: light;
+
+  --page-bg: #f3f5f0;
+  --surface-bg: #ffffff;
+  --surface-secondary: #edf2e9;
+  --text-main: #303a32;
+  --text-muted: #5d695f;
+  --heading-color: #294b35;
+  --accent: #24683c;
+  --accent-hover: #194d2c;
+  --border-color: #dce4d9;
+  --shadow-color: rgb(25 45 30 / 8%);
+  --control-bg: #e1e8de;
+  --focus-color: #8ecb9a;
+}
+
+/* ==================================================
+   Dark theme
+   ================================================== */
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page-bg: #171d19;
+  --surface-bg: #222b25;
+  --surface-secondary: #29372d;
+  --text-main: #e0e7df;
+  --text-muted: #b2beb3;
+  --heading-color: #c4dfc6;
+  --accent: #83c691;
+  --accent-hover: #a0d9aa;
+  --border-color: #3b4b3e;
+  --shadow-color: rgb(0 0 0 / 22%);
+  --control-bg: #344438;
+  --focus-color: #a6e4ae;
+}
+
+/* ==================================================
+   Shared page colors
+   ================================================== */
+
+body {
+  color: var(--text-main);
+  background-color: var(--page-bg);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+section,
+.photo-card {
+  background-color: var(--surface-bg);
+  border-color: var(--border-color);
+  box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+section h2 {
+  color: var(--heading-color);
+}
+
+.photo-caption h3 {
+  color: var(--accent);
+}
+
+.photo-caption p {
+  color: var(--text-muted);
+}
+
+nav a {
+  transition: color 0.2s ease;
+}
+
+html[data-theme="dark"] header {
+  background-color: #17291d;
+  background-blend-mode: multiply;
+}
+
+html[data-theme="dark"] nav a:hover {
+  color: #c4e9c8;
+}
+
+footer {
+  color: var(--text-main);
+}
+
+/* ==================================================
+   Theme slider
+   ================================================== */
+
+.theme-control {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.theme-switch-label {
+  color: #f4f1ea;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.theme-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.theme-switch-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 46px;
+  height: 26px;
+  padding: 3px;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-radius: 999px;
+  background: #d9e1d6;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-switch-thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 25%);
+  transition: transform 0.2s ease;
+}
+
+.theme-switch input:checked + .theme-switch-track {
+  background: #355f40;
+  border-color: #83c691;
+}
+
+.theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
+  transform: translateX(20px);
+  background: #e6f4e7;
+}
+
+.theme-switch input:focus-visible + .theme-switch-track {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body,
+  .theme-switch-track,
+  .theme-switch-thumb {
+    transition: none;
+  }
+}

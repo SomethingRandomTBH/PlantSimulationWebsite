@@ -144,10 +144,6 @@ Additional measurements and auxiliary model outputs may also be appended.
 
 Interpret the columns according to their stated meanings. Do not invent missing values, fabricate observations, or silently modify the supplied measurements.
 
-Optional inline plant photo:
-- When the user attaches an inline photograph of the plant, visually inspect leaf coloration, variegation, turgor, internodal spacing, stem count, and visible container or substrate conditions.
-- Integrate directly visible findings into the Plant Profile, Issues Found, and Care Plan alongside the supplied telemetry, without inventing visual details that cannot be clearly seen in the image.
-
 DATA RELIABILITY AND TOLERANCE
 
 All recorded measurements, environmental values, and auxiliary model outputs must be interpreted in context. Some values may reflect manual measurements, rolling averages, inferred conditions, or heuristic predictions.

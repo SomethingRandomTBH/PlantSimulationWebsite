@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,642 +8,76 @@
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
     <link rel="manifest" href="images/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The Botanists' Plant Simulation — Earth-grounded Golden Pothos growth forecasting instrument powered by Random Forest conformal calibration and Gemini diagnostics.">
     <title>The Botanists' Plant Simulation</title>
     <link rel="stylesheet" href="styles/style.css">
-    <script src="scripts/main.js"></script>
+    <script src="../scripts/main.js"></script>
   </head>
 
   <body>
-    <a class="skip-link" href="#main-content">Skip to main instrument</a>
+    <header>
+      <h1>The Botanists' Plant Simulation</h1>
 
-    <header class="topbar site-header">
-      <div class="topbar-inner">
-        <div class="topbar-brand-group">
-          <a class="topbar-wordmark" href="mainPage.html">
-            <span class="topbar-status-dot" aria-hidden="true"></span>
-            <h1>The Botanists' Plant Simulation</h1>
-          </a>
-          <span class="topbar-telemetry-tag">EPIPREMNUM · RF-CONFORMAL · v2.4</span>
-        </div>
-
-        <div class="topbar-actions">
-          <div class="theme-control">
-            <label class="theme-switch" for="theme-toggle">
-              <span class="theme-switch-label">Dark mode</span>
-              <input
-                type="checkbox"
-                id="theme-toggle"
-                role="switch"
-                aria-label="Toggle dark mode"
-              >
-              <span class="theme-switch-track" aria-hidden="true">
-                <span class="theme-switch-thumb"></span>
-              </span>
-            </label>
-          </div>
-        </div>
+      <nav>
+        <a href="mainPage.html">Home</a>
+        <a href="pages/about.html">About</a>
+        <a href="pages/planning.html">Plan</a>
+        <a href="pages/team.html">Team</a>
+        <a href="pages/research.html">Research</a>
+        <a href="pages/prediction.html">Predict Growth</a>
+      </nav>
+      <div class="theme-control">
+        <label class="theme-switch" for="theme-toggle">
+          <span class="theme-switch-label">Dark mode</span>
+          <input
+            type="checkbox"
+            id="theme-toggle"
+            role="switch"
+            aria-label="Toggle dark mode"
+          >
+          <span class="theme-switch-track" aria-hidden="true">
+            <span class="theme-switch-thumb"></span>
+          </span>
+        </label>
       </div>
     </header>
 
-    <main id="main-content" class="instrument-main">
-      <!-- Editorial Hero + Specimen Telemetry Card -->
-      <div class="home-hero-grid">
-        <section class="hero-editorial-card reveal-item">
-          <div>
-            <p class="eyebrow">
-              <span class="status-dot" aria-hidden="true"></span>
-              BOTANICAL TELEMETRY INSTRUMENT · GOLDEN POTHOS
-            </p>
-            <h2 class="hero-headline">
-              Precision growth forecasting for indoor Golden Pothos.
-            </h2>
-            <p class="hero-value-line">
-              Enter your plant's environmental telemetry to simulate 7-day, 14-day, and 28-day vine elongation with a 90% split-conformal prediction interval and an optional vision-assisted Gemini botanical assessment.
-            </p>
-          </div>
+    <main>
+      <div class="main">
 
-          <div>
-            <div class="hero-cta-row">
-              <a class="btn btn-primary" href="#predict">
-                Open predictor
-                <span aria-hidden="true">↓</span>
-              </a>
-              <span class="telemetry-pill telemetry-pill-sage">FORECAST · 7D / 14D / 28D</span>
-            </div>
+        <!-- Welcome text on the left -->
+        <section>
+          <h2>Welcome to our Plant Simulation Website!</h2>
 
-            <div class="tick-ruler" aria-hidden="true"></div>
-
-            <div class="hero-telemetry-strip">
-              <div class="hero-stat-cell">
-                <span class="hero-stat-label">MODEL ENGINE</span>
-                <span class="hero-stat-value">Random Forest (100 trees)</span>
-              </div>
-              <div class="hero-stat-cell">
-                <span class="hero-stat-label">CALIBRATION</span>
-                <span class="hero-stat-value">90% Conformal (±0.19 in)</span>
-              </div>
-              <div class="hero-stat-cell">
-                <span class="hero-stat-label">NODE CONSTANT</span>
-                <span class="hero-stat-value">1.20 in / leaf spacing</span>
-              </div>
-            </div>
-          </div>
+          <p>
+            This website is designed to take in a few parameters
+            and output expected growth patterns for your selected
+            household plant.
+          </p>
         </section>
 
-        <aside class="photo-card reveal-item reveal-delay-1" aria-label="Specimen reference card">
-          <div class="specimen-card-header">
-            <span>SPECIMEN · EPIPREMNUM AUREUM</span>
-            <span>REF · GP-01</span>
-          </div>
+        <!-- Separate photo card on the right -->
+        <aside class="photo-card">
           <img
             class="image-slot"
             src="images/GoldenPothos.jpeg"
             alt="A Golden Pothos plant with green and yellow leaves"
           >
+
           <div class="photo-caption">
-            <div>
-              <h3>Golden Pothos</h3>
-              <p>
-                Evergreen tropical climbing vine (also known as Devil's Ivy) modeled across light, thermal, container, and hydration gradients.
-              </p>
-            </div>
-            <div class="specimen-meta-grid">
-              <span>LIGHT OPTIMUM: 2,500 LUX</span>
-              <span>THERMAL BAND: 62–85 °F</span>
-              <span>CANOPY LOSS: 0% (HEALTHY)</span>
-              <span>TRAINING COHORT: 2,000 PLANTS</span>
-            </div>
+            <h3>Golden Pothos</h3>
+
+            <p>
+              Very common household plant also known as Devil's Ivy or Money Plant. 
+            </p>
           </div>
         </aside>
+
       </div>
-
-      <!-- Dynamic Navigation Tile Grid (Hydrated from scripts/config/pages.js) -->
-      <section class="directory-section instrument-section" aria-labelledby="directory-heading">
-        <div class="section-header-bar">
-          <span id="directory-heading" class="section-coordinate">
-            00 · INSTRUMENT MODULES &amp; DOCUMENTATION
-          </span>
-          <span class="telemetry-pill">REGISTRY · 5 ACTIVE MODULES</span>
-        </div>
-
-        <div id="home-tile-grid" class="tile-grid">
-          <a class="nav-tile" href="pages/about.html" data-page-id="about">
-            <div class="nav-tile-top">
-              <span class="nav-tile-code">MOD · 01</span>
-            </div>
-            <div class="nav-tile-body">
-              <h3>About</h3>
-              <p>Machine-learning architecture and empirical methodology for indoor plant simulation.</p>
-            </div>
-            <div class="nav-tile-footer">
-              <span>Inspect system overview</span>
-              <span class="nav-tile-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-
-          <a class="nav-tile" href="pages/planning.html" data-page-id="planning">
-            <div class="nav-tile-top">
-              <span class="nav-tile-code">MOD · 02</span>
-            </div>
-            <div class="nav-tile-body">
-              <h3>Plan</h3>
-              <p>Development roadmap from physiological literature curation to conformal calibration.</p>
-            </div>
-            <div class="nav-tile-footer">
-              <span>View phase roadmap</span>
-              <span class="nav-tile-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-
-          <a class="nav-tile" href="pages/team.html" data-page-id="team">
-            <div class="nav-tile-top">
-              <span class="nav-tile-code">MOD · 03</span>
-            </div>
-            <div class="nav-tile-body">
-              <h3>Team</h3>
-              <p>Interdisciplinary Computer Science and Plant Biotechnology engineering crew.</p>
-            </div>
-            <div class="nav-tile-footer">
-              <span>Meet the researchers</span>
-              <span class="nav-tile-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-
-          <a class="nav-tile" href="pages/research.html" data-page-id="research">
-            <div class="nav-tile-top">
-              <span class="nav-tile-code">MOD · 04</span>
-            </div>
-            <div class="nav-tile-body">
-              <h3>Research</h3>
-              <p>Liebig's Law of Minimum, light compensation thresholds, thermal curves, and soil moisture.</p>
-            </div>
-            <div class="nav-tile-footer">
-              <span>Read physiological notes</span>
-              <span class="nav-tile-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-
-          <a class="nav-tile nav-tile-primary" href="#predict" data-page-id="predict">
-            <div class="nav-tile-top">
-              <span class="nav-tile-code">FORECAST · 7D</span>
-            </div>
-            <div class="nav-tile-body">
-              <h3>Predict Growth</h3>
-              <p>Run 7-day, 14-day, and 28-day Random Forest vine forecasts with Gemini botanical diagnostics.</p>
-            </div>
-            <div class="nav-tile-footer">
-              <span>Launch growth instrument</span>
-              <span class="nav-tile-arrow" aria-hidden="true">→</span>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Predictor Instrument Section (#predict) -->
-      <section id="predict" class="instrument-section" aria-labelledby="predict-heading">
-        <div class="predict-section-banner">
-          <div>
-            <p class="eyebrow">
-              <span class="status-dot" aria-hidden="true"></span>
-              GOLDEN POTHOS · GROWTH FORECAST INSTRUMENT
-            </p>
-            <h2 id="predict-heading">Get to know your plant's next week.</h2>
-            <p class="hero-description">
-              Enter your pothos's current conditions to estimate its next seven days of growth, sequential 2-week and 4-week trajectories, and its projected leaf count.
-            </p>
-          </div>
-          <div class="forecast-tag">FORECAST · 7D / 14D / 28D</div>
-        </div>
-
-        <div class="content-grid predict-workspace-grid">
-          <!-- Left Column: Specimen & Environment Input Form -->
-          <section class="panel input-panel" aria-labelledby="form-panel-title">
-            <div class="panel-heading">
-              <div>
-                <h2 id="form-panel-title">Your plant</h2>
-                <p>Enter the current plant measurements and indoor environment.</p>
-              </div>
-              <span class="step-number">01 · INPUT</span>
-            </div>
-
-            <form id="prediction-form" novalidate>
-              <div class="form-grid">
-                <div class="field">
-                  <div class="field-header">
-                    <label for="age">Plant age (days)</label>
-                    <span class="field-unit-tag">DAYS</span>
-                  </div>
-                  <input id="age" name="Age_Days" type="number"
-                         min="1" max="750" step="1" value="90" required>
-                  <small>1–750 days (whole number)</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="stem">Total vine length (inches)</label>
-                    <span class="field-unit-tag">IN</span>
-                  </div>
-                  <input id="stem" name="Stem_Length_Inches" type="number"
-                         min="0.1" max="500" step="0.01" value="24" required>
-                  <small>0.1–500 in · Measure the vine, not pot height</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="leaves">Current total leaf count</label>
-                    <span class="field-unit-tag">LEAVES</span>
-                  </div>
-                  <input id="leaves" name="Leaf_Count" type="number"
-                         min="0" max="500" step="1" value="20" required>
-                  <small>0–500 leaves (whole number)</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="pot">Pot diameter (inches)</label>
-                    <span class="field-unit-tag">CONTAINER</span>
-                  </div>
-                  <select id="pot" name="Pot_Size_Inches" required>
-                    <option value="4">4 inches</option>
-                    <option value="6" selected>6 inches</option>
-                    <option value="8">8 inches</option>
-                    <option value="10">10 inches</option>
-                    <option value="12">12 inches</option>
-                  </select>
-                  <small>Supported container diameters: 4–12 in</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="light">Light level (lux)</label>
-                    <span class="field-unit-tag">LUX</span>
-                  </div>
-                  <input id="light" name="Light_Lux" type="number"
-                         min="300" max="10000" step="1" value="2500" required>
-                  <small>Lighting range: 300–10,000 lux</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="water-volume">Water per watering (mL)</label>
-                    <span class="field-unit-tag">ML</span>
-                  </div>
-                  <input id="water-volume" name="Watering_Volume_mL"
-                         type="number" min="100" max="600" step="1"
-                         value="300" required>
-                  <small>100–600 mL per irrigation event</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="frequency">Watering interval (days)</label>
-                    <span class="field-unit-tag">INTERVAL</span>
-                  </div>
-                  <input id="frequency" name="Watering_Freq_Days"
-                         type="number" min="4" max="14" step="0.1"
-                         value="7" required>
-                  <small>4–14 days between waterings</small>
-                </div>
-
-                <div class="field">
-                  <div class="field-header">
-                    <label for="temperature">Temperature (°F)</label>
-                    <span class="field-unit-tag">°F</span>
-                  </div>
-                  <input id="temperature" name="Temperature_F"
-                         type="number" min="62" max="85" step="0.1"
-                         value="75" required>
-                  <small>62–85 °F ambient range</small>
-                </div>
-
-                <div class="field field-full">
-                  <div class="field-header">
-                    <label for="humidity">Humidity level</label>
-                    <span class="field-unit-tag">RH CLASS</span>
-                  </div>
-                  <select id="humidity" name="Humidity_Level" required>
-                    <option value="Low">Low</option>
-                    <option value="Average" selected>Average</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Optional Plant Photo Upload Control (Part 4) -->
-              <div class="upload-block">
-                <div class="upload-header">
-                  <label class="upload-title" for="plant-photo-input">
-                    Plant photo for AI diagnostic summary
-                  </label>
-                  <span class="upload-optional-badge">OPTIONAL · GEMINI VISION</span>
-                </div>
-                <p class="upload-description">
-                  Optional: Attach a photo of your pothos. The photo is downscaled in your browser to max 1600px (stripping EXIF metadata) and sent to Google Gemini to write the botanical summary. The numerical forecast works identically with no photo.
-                </p>
-
-                <div
-                  id="photo-dropzone"
-                  class="upload-dropzone"
-                  role="button"
-                  tabindex="0"
-                  aria-label="Drop a plant photo here, or press Enter to browse"
-                >
-                  <input
-                    id="plant-photo-input"
-                    class="upload-input-hidden"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                  >
-                  <input
-                    id="plant-camera-input"
-                    class="upload-input-hidden"
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    capture="environment"
-                  >
-                  <div class="upload-dropzone-content">
-                    <svg class="upload-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                      <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                    <span class="upload-prompt-text">
-                      Drag and drop a plant photo, or choose a file
-                    </span>
-                    <span class="upload-subtext">
-                      Accepts JPEG, PNG, WebP · Auto-downscaled to ≤1600px
-                    </span>
-                    <div class="upload-button-group">
-                      <button id="photo-browse-btn" class="btn btn-ghost" type="button">
-                        Browse photo
-                      </button>
-                      <button id="photo-camera-btn" class="btn btn-ghost" type="button">
-                        Use camera
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div id="photo-preview" class="upload-preview" hidden>
-                  <img id="photo-preview-img" class="upload-preview-thumb" alt="Selected plant preview">
-                  <div class="upload-preview-meta">
-                    <div id="photo-preview-name" class="upload-preview-name"></div>
-                    <div id="photo-preview-meta" class="upload-preview-details"></div>
-                  </div>
-                  <button
-                    id="photo-remove-btn"
-                    class="upload-remove-btn"
-                    type="button"
-                    aria-label="Remove selected plant photo"
-                  >
-                    Remove
-                  </button>
-                </div>
-
-                <div id="photo-error" class="upload-error" role="alert" aria-live="polite"></div>
-              </div>
-
-              <div id="form-error" class="error-message" role="alert" aria-live="polite"></div>
-
-              <div class="form-actions-row">
-                <button id="predict-button" class="primary-button" type="submit">
-                  Predict my pothos growth
-                  <span aria-hidden="true">→</span>
-                </button>
-                <button id="reset-button" class="secondary-button" type="button">
-                  Reset
-                </button>
-              </div>
-
-              <p class="form-note">
-                Predictions are estimates from a synthetic-data Random Forest model, not guaranteed biological outcomes.
-              </p>
-            </form>
-          </section>
-
-          <!-- Right Column: Inline Forecast Readout + Multiweek + Gemini Summary -->
-          <section class="panel results-panel" aria-labelledby="results-title">
-            <div class="panel-heading">
-              <div>
-                <h2 id="results-title">Your forecast</h2>
-                <p>Sequential Random Forest telemetry and Gemini physiology report.</p>
-              </div>
-              <span class="step-number">02 · READOUT</span>
-            </div>
-
-            <div id="results-placeholder" class="empty-state">
-              <div class="leaf-symbol" aria-hidden="true">✳</div>
-              <h3>Ready for specimen telemetry</h3>
-              <p>
-                Complete the parameters on the left and run a prediction to generate your 7-day, 2-week, and 4-week forecast and botanical care report here.
-              </p>
-            </div>
-
-            <div id="loading" class="loading-state" hidden>
-              <div class="spinner" aria-hidden="true"></div>
-              <p>Analyzing your plant conditions…</p>
-            </div>
-
-            <div id="results" class="results-content" hidden>
-              <!-- 7-Day Primary Telemetry Cards -->
-              <div>
-                <div class="results-subblock-header">
-                  <h3>7-Day Primary Forecast</h3>
-                  <span class="telemetry-pill telemetry-pill-sage">HORIZON · 7D</span>
-                </div>
-
-                <div class="result-grid">
-                  <div class="result-card">
-                    <span class="result-label">FORECAST · 7D STEM GROWTH</span>
-                    <div class="result-value">
-                      <span id="growth-result">—</span>
-                      <span class="result-unit">inches</span>
-                    </div>
-                    <p>Estimated additional vine length over 7 days.</p>
-                  </div>
-
-                  <div class="result-card result-card-highlight">
-                    <span class="result-label">INTERVAL · 90% PREDICTION RANGE</span>
-                    <div class="result-value">
-                      <span id="growth-lower-result">—</span>
-                      <span class="result-unit">to</span>
-                      <span id="growth-upper-result">—</span>
-                      <span class="result-unit">inches</span>
-                    </div>
-                    <div class="interval-meter" aria-hidden="true">
-                      <div class="interval-meter-fill"></div>
-                    </div>
-                    <p>Calibrated from errors on held-out calibration plants.</p>
-                  </div>
-
-                  <div class="result-card">
-                    <span class="result-label">FOLIAGE · PROJECTED TOTAL</span>
-                    <div class="result-value">
-                      <span id="leaf-result">—</span>
-                      <span class="result-unit">leaves</span>
-                    </div>
-                    <p>Projected total leaf count after 7 days.</p>
-                  </div>
-
-                  <div class="result-card result-card-highlight">
-                    <span class="result-label">NODES · WHOLE-LEAF ESTIMATE</span>
-                    <div class="result-value">
-                      <span id="rounded-leaf-result">—</span>
-                      <span class="result-unit">leaves</span>
-                    </div>
-                    <p>Rounded version of the projected total leaf count.</p>
-                  </div>
-                </div>
-
-                <p id="result-explanation" class="explanation-callout"></p>
-              </div>
-
-              <!-- Sequential 2-Week and 4-Week Forecasts -->
-              <div id="multiweek-section" class="results-subblock">
-                <div class="results-subblock-header">
-                  <h3>Extended Sequential Forecast</h3>
-                  <span class="telemetry-pill">HORIZON · 14D &amp; 28D</span>
-                </div>
-
-                <div class="result-grid">
-                  <div class="result-card">
-                    <span class="result-label">HORIZON · 2-WEEK FORECAST</span>
-                    <div class="result-value">
-                      <span id="week-2-length">—</span>
-                      <span class="result-unit">inches</span>
-                      <p id="week-2-range-note" class="growth-range-note"></p>
-                    </div>
-                    <p>Projected total vine length after 14 days.</p>
-                    <p>
-                      Cumulative growth:
-                      <strong><span id="week-2-growth">—</span> inches</strong>
-                    </p>
-                    <p>
-                      Projected total leaves:
-                      <strong><span id="week-2-leaves">—</span></strong>
-                    </p>
-                  </div>
-
-                  <div class="result-card result-card-highlight">
-                    <span class="result-label">HORIZON · 4-WEEK FORECAST</span>
-                    <div class="result-value">
-                      <span id="week-4-length">—</span>
-                      <span class="result-unit">inches</span>
-                      <p id="week-4-range-note" class="growth-range-note"></p>
-                    </div>
-                    <p>Projected total vine length after 28 days.</p>
-                    <p>
-                      Cumulative growth:
-                      <strong><span id="week-4-growth">—</span> inches</strong>
-                    </p>
-                    <p>
-                      Projected total leaves:
-                      <strong><span id="week-4-leaves">—</span></strong>
-                    </p>
-                  </div>
-                </div>
-
-                <p id="multiweek-explanation" class="explanation-callout"></p>
-              </div>
-
-              <!-- Gemini AI Botanical Summary -->
-              <div id="summary-section" class="results-subblock" aria-labelledby="summary-title">
-                <div class="results-subblock-header">
-                  <h3 id="summary-title">AI Botanical Diagnostic Summary</h3>
-                  <span class="telemetry-pill telemetry-pill-sage">GEMINI · MULTIMODAL</span>
-                </div>
-
-                <div class="llm-box">
-                  <div class="llm-box-header">
-                    <span class="llm-box-label">
-                      <span class="status-dot" aria-hidden="true"></span>
-                      Gemini summary
-                    </span>
-
-                    <div class="llm-box-actions">
-                      <button
-                        id="reprompt-button"
-                        class="copy-button"
-                        type="button"
-                        aria-label="Generate a new summary"
-                        disabled
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <polyline points="23 4 23 10 17 10"></polyline>
-                          <polyline points="1 20 1 14 7 14"></polyline>
-                          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                        </svg>
-                        <span id="reprompt-label">Regenerate</span>
-                      </button>
-
-                      <button
-                        id="copy-button"
-                        class="copy-button"
-                        type="button"
-                        aria-label="Copy summary to clipboard"
-                        disabled
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <rect x="9" y="9" width="13" height="13" rx="2"></rect>
-                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                        <span id="copy-label">Copy</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="llm-box-body" aria-live="polite">
-                    <div id="summary-loading" class="llm-loading">
-                      <span class="llm-spinner" aria-hidden="true"></span>
-                      <span>Writing your botanical assessment…</span>
-                    </div>
-
-                    <div id="summary-text" class="llm-text markdown-body" hidden></div>
-
-                    <div id="summary-error" class="llm-error" hidden>
-                      <p id="summary-error-message"></p>
-                      <button id="retry-button" class="llm-retry" type="button">
-                        Try again
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Logged Specimen Conditions -->
-              <div class="results-subblock">
-                <div class="results-subblock-header">
-                  <h3>Conditions You Entered</h3>
-                  <a class="btn btn-ghost" href="pages/prediction-output.html">
-                    Open full-page report view →
-                  </a>
-                </div>
-                <table class="input-table">
-                  <tbody id="input-summary"></tbody>
-                </table>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <section class="disclaimer" aria-label="Methodology disclaimer">
-          <strong>ABOUT THESE ESTIMATES · SYNTHETIC CALIBRATION</strong>
-          <p>
-            This model was trained on synthetic pothos data (2,000 simulated plants over 104 weeks). Its reported accuracy and 90% prediction interval measure performance on simulated plants and may not reflect real-world accuracy. The healthy-plant simulation assumes zero leaf loss and estimates new leaves using an average node spacing of 1.2 inches per leaf.
-          </p>
-        </section>
-      </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <div class="footer-meta">
-          <span class="status-dot" aria-hidden="true"></span>
-          <p>&copy; 2026 The Botanists' Plant Simulation · Golden Pothos Growth Instrument</p>
-        </div>
-        <span class="footer-telemetry">SYNTHETIC RF · 90% CONFORMAL · GEMINI DIAGNOSTICS</span>
-      </div>
+    <footer>
+      <p>&copy; 2026 Plant Simulation</p>
     </footer>
+
   </body>
 </html>

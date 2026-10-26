@@ -5,15 +5,16 @@
   const DARK = "dark";
   const LIGHT = "light";
 
-  // 1. Apply the saved theme immediately before first paint to prevent FOUC.
+  // Apply the saved theme immediately, before the browser renders the page.
   function getSavedTheme() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
+
       if (saved === DARK || saved === LIGHT) {
         return saved;
       }
     } catch (error) {
-      // Fall back to system preference.
+      // Fall back to the system preference.
     }
 
     try {
@@ -27,64 +28,105 @@
 
   const initialTheme = getSavedTheme();
   document.documentElement.dataset.theme = initialTheme;
-
+  
   function applyTheme(theme) {
     const selectedTheme = theme === DARK ? DARK : LIGHT;
+
     document.documentElement.dataset.theme = selectedTheme;
 
     const toggle = document.getElementById("theme-toggle");
+
     if (toggle) {
       toggle.checked = selectedTheme === DARK;
-      toggle.setAttribute("aria-checked", String(selectedTheme === DARK));
+      toggle.setAttribute(
+        "aria-checked",
+        String(selectedTheme === DARK)
+      );
     }
 
     try {
       localStorage.setItem(STORAGE_KEY, selectedTheme);
     } catch (error) {
-      // Theme still works for the current page without storage.
+      // The theme still works for the current page without storage.
     }
-
-    window.dispatchEvent(
-      new CustomEvent("botanists:themechange", {
-        detail: { theme: selectedTheme }
-      })
-    );
   }
 
-  function bindExistingThemeControl() {
-    const toggle = document.getElementById("theme-toggle");
-    if (!toggle || toggle.dataset.boundTheme === "true") {
+  function createThemeControl() {
+    let toggle = document.getElementById("theme-toggle");
+
+    if (toggle) {
+      return toggle;
+    }
+
+    const header = document.querySelector("header, .site-header");
+
+    if (!header) {
+      return null;
+    }
+
+    const control = document.createElement("div");
+    control.className = "theme-control";
+
+    const label = document.createElement("label");
+    label.className = "theme-switch";
+    label.htmlFor = "theme-toggle";
+
+    const labelText = document.createElement("span");
+    labelText.className = "theme-switch-label";
+    labelText.textContent = "Dark mode";
+
+    toggle = document.createElement("input");
+    toggle.type = "checkbox";
+    toggle.id = "theme-toggle";
+    toggle.setAttribute("role", "switch");
+    toggle.setAttribute("aria-label", "Toggle dark mode");
+
+    const track = document.createElement("span");
+    track.className = "theme-switch-track";
+    track.setAttribute("aria-hidden", "true");
+
+    const thumb = document.createElement("span");
+    thumb.className = "theme-switch-thumb";
+
+    track.appendChild(thumb);
+    label.append(labelText, toggle, track);
+    control.appendChild(label);
+
+    const nav = header.querySelector("nav, .site-nav");
+
+    if (nav) {
+      nav.insertAdjacentElement("afterend", control);
+    } else {
+      header.appendChild(control);
+    }
+
+    return toggle;
+  }
+
+  function initializeTheme() {
+    const initialTheme = getSavedTheme();
+
+    document.documentElement.dataset.theme = initialTheme;
+
+    const toggle = createThemeControl();
+
+    if (!toggle) {
       return;
     }
 
-    const current = document.documentElement.dataset.theme || getSavedTheme();
-    toggle.checked = current === DARK;
+    toggle.checked = initialTheme === DARK;
     toggle.setAttribute("aria-checked", String(toggle.checked));
-    toggle.dataset.boundTheme = "true";
 
     toggle.addEventListener("change", () => {
       applyTheme(toggle.checked ? DARK : LIGHT);
     });
   }
 
-  // 2. Load the modular ES application bootstrap relative to this script.
-  const currentScript = document.currentScript;
-  const scriptBase = currentScript && currentScript.src
-    ? new URL(".", currentScript.src).href
-    : window.location.href;
-
-  function initialize() {
-    bindExistingThemeControl();
-    if (window.location.protocol !== "file:") {
-      import(new URL("./core/init.js", scriptBase).href).catch(() => {
-        bindExistingThemeControl();
-      });
-    }
-  }
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initialize, { once: true });
+    document.addEventListener("DOMContentLoaded", initializeTheme, {
+      once: true
+    });
   } else {
-    initialize();
+    initializeTheme();
   }
 })();
