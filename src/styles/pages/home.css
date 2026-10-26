@@ -1,0 +1,166 @@
+/* ==========================================================================
+   PAGES/HOME.CSS — Editorial Hero, Specimen Readout Card, & Navigation Tiles
+   ========================================================================== */
+
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: var(--space-6);
+  align-items: stretch;
+  margin-bottom: var(--space-8);
+}
+
+.hero-editorial-card {
+  background-color: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-5);
+}
+
+.hero-headline {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: var(--text-hero);
+  color: var(--heading-color);
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0;
+}
+
+.hero-value-line {
+  font-size: var(--text-md);
+  color: var(--text-secondary);
+  max-width: 58ch;
+  line-height: 1.6;
+}
+
+.hero-telemetry-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-color);
+}
+
+.hero-stat-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.hero-stat-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.hero-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--heading-color);
+}
+
+.hero-cta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* Specimen Photo Card on the Right (Preserves .photo-card, .image-slot, .photo-caption) */
+.photo-card {
+  background-color: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.specimen-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background-color: var(--surface-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.photo-card .image-slot {
+  display: block;
+  width: 100%;
+  height: 290px;
+  object-fit: cover;
+  object-position: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.photo-caption {
+  padding: var(--space-5);
+  background-color: var(--surface-bg);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.photo-caption h3 {
+  color: var(--heading-color);
+  font-size: var(--text-lg);
+  margin-bottom: 0.25rem;
+}
+
+.photo-caption p {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.specimen-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* Navigation Directory Section */
+.directory-section {
+  margin-bottom: var(--space-10);
+}
+
+@media (max-width: 920px) {
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-editorial-card {
+    padding: var(--space-6);
+  }
+}
+
+@media (max-width: 560px) {
+  .hero-telemetry-strip {
+    grid-template-columns: 1fr;
+  }
+}

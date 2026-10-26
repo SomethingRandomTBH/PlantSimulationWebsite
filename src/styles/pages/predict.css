@@ -1,0 +1,184 @@
+/* ==========================================================================
+   PAGES/PREDICT.CSS — Predictor Instrument Section & Output Readouts
+   Works both inside mainPage.html#predict and on pages/prediction-output.html.
+   ========================================================================== */
+
+#predict {
+  scroll-margin-top: 4.5rem;
+}
+
+.predict-section-banner {
+  background-color: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.predict-section-banner h2 {
+  margin: var(--space-2) 0 0.35rem;
+}
+
+.predict-section-banner .hero-description {
+  max-width: 64ch;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* Empty & Loading States inside Results Panel */
+.empty-state {
+  padding: var(--space-10) var(--space-5);
+  text-align: center;
+  background-color: var(--surface-secondary);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.leaf-symbol {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--surface-highlight);
+  border: 1px solid var(--border-telemetry);
+  color: var(--text-telemetry);
+  font-size: 1.4rem;
+  margin-bottom: var(--space-3);
+}
+
+.empty-state h3 {
+  color: var(--heading-color);
+  margin-bottom: var(--space-2);
+}
+
+.empty-state p {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.loading-state {
+  padding: var(--space-10) var(--space-4);
+  text-align: center;
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.loading-state .spinner {
+  width: 32px;
+  height: 32px;
+  margin: 0 auto var(--space-3);
+}
+
+.loading-state p {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* Results Content Stack */
+.results-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.results-subblock {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-color);
+}
+
+.results-subblock-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.results-subblock-header h3 {
+  font-size: var(--text-md);
+  color: var(--heading-color);
+  margin: 0;
+}
+
+.explanation-callout {
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--surface-secondary);
+  border-left: 3px solid var(--data-accent-strong);
+  border-radius: var(--radius-xs);
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+/* Conditions Entered Summary Table */
+.input-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.input-table th,
+.input-table td {
+  padding: 0.55rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.input-table th {
+  font-weight: 500;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.input-table td {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--heading-color);
+  text-align: right;
+}
+
+.input-table tr:last-child th,
+.input-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Methodology Disclaimer Banner */
+.disclaimer {
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  background-color: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--data-accent-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.disclaimer strong {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--heading-color);
+  margin-bottom: 0.25rem;
+}
+
+.disclaimer p {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.55;
+}

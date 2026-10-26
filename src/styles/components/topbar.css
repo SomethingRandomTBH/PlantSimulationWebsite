@@ -1,0 +1,200 @@
+/* ==========================================================================
+   COMPONENTS/TOPBAR.CSS — Slim Instrument Top Bar & Theme Switch
+   Single slim bar with wordmark, sub-page "Home" back control, and theme toggle.
+   No horizontal tab bars.
+   ========================================================================== */
+
+header,
+.site-header,
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--surface-topbar);
+  color: #F4F1EA;
+  border-bottom: 1px solid rgba(167, 196, 160, 0.22);
+  padding: 0.7rem 0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
+}
+
+.topbar-inner {
+  width: min(1280px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.topbar-brand-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.topbar-wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: #F4F1EA;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+}
+
+.topbar-wordmark:hover {
+  color: #FFFFFF;
+}
+
+.topbar-wordmark h1,
+header h1 {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: #F4F1EA;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.topbar-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #68C781;
+  box-shadow: 0 0 0 3px rgba(104, 199, 129, 0.22);
+  flex-shrink: 0;
+}
+
+.topbar-telemetry-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #A7C4A0;
+  padding: 0.18rem 0.5rem;
+  border: 1px solid rgba(167, 196, 160, 0.3);
+  border-radius: var(--radius-xs);
+  background-color: rgba(15, 22, 18, 0.35);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-left: auto;
+}
+
+/* Sub-page "Home" Back Control */
+.topbar-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.36rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #F4F1EA;
+  background-color: rgba(244, 241, 234, 0.08);
+  border: 1px solid rgba(167, 196, 160, 0.32);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard);
+}
+
+.topbar-back-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(167, 196, 160, 0.18);
+  border-color: #A7C4A0;
+}
+
+.topbar-back-link:active {
+  transform: translateY(1px);
+}
+
+/* Theme Switch Control (Preserves .theme-control, .theme-switch, #theme-toggle hooks) */
+.theme-control {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.theme-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.2rem 0.3rem;
+  border-radius: var(--radius-sm);
+}
+
+.theme-switch-label {
+  color: #DCE5DD;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.theme-switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.theme-switch-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  padding: 2px;
+  border: 1px solid rgba(167, 196, 160, 0.45);
+  border-radius: var(--radius-pill);
+  background-color: #264935;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard);
+}
+
+.theme-switch-thumb {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #F4F1EA;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform var(--duration-fast) var(--ease-standard),
+              background-color var(--duration-fast) var(--ease-standard);
+}
+
+.theme-switch input:checked + .theme-switch-track {
+  background-color: #355F40;
+  border-color: #A7C4A0;
+}
+
+.theme-switch input:checked + .theme-switch-track .theme-switch-thumb {
+  transform: translateX(20px);
+  background-color: #A7C4A0;
+}
+
+.theme-switch input:focus-visible + .theme-switch-track {
+  outline: 2px solid #A7C4A0;
+  outline-offset: 2px;
+}
+
+@media (max-width: 680px) {
+  .topbar-telemetry-tag {
+    display: none;
+  }
+
+  .topbar-inner {
+    width: calc(100% - 1.5rem);
+  }
+}

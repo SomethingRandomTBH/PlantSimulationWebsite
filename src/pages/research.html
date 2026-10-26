@@ -7,67 +7,121 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
     <link rel="manifest" href="../images/site.webmanifest">
-    <title>The Botanists' Plant Simulation</title>
+    <title>Research | The Botanists' Plant Simulation</title>
     <link rel="stylesheet" href="../styles/style.css">
     <script src="../scripts/main.js"></script>
   </head>
   <body>
-    <header>
-      <h1>The Botanists' Plant Simulation</h1>
-      <nav>
-        <a href="../mainPage.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="planning.html">Plan</a>
-        <a href="team.html">Team</a>
-        <a href="research.html">Research</a>
-        <a href="prediction.html">Predict Growth</a>
-      </nav>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="topbar site-header">
+      <div class="topbar-inner">
+        <div class="topbar-brand-group">
+          <a class="topbar-wordmark" href="../mainPage.html">
+            <span class="topbar-status-dot" aria-hidden="true"></span>
+            <h1>The Botanists' Plant Simulation</h1>
+          </a>
+          <span class="topbar-telemetry-tag">MOD · 04</span>
+        </div>
+
+        <div class="topbar-actions">
+          <a class="topbar-back-link" href="../mainPage.html" aria-label="Return to Home Instrument Hub">
+            <span aria-hidden="true">←</span>
+            <span>Home</span>
+          </a>
+          <div class="theme-control">
+            <label class="theme-switch" for="theme-toggle">
+              <span class="theme-switch-label">Dark mode</span>
+              <input type="checkbox" id="theme-toggle" role="switch" aria-label="Toggle dark mode">
+              <span class="theme-switch-track" aria-hidden="true">
+                <span class="theme-switch-thumb"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <main>
-      <section>
-        <h2>Liebeg's Law of Minimum</h2>
-        <p><b>Liebeg's Law of Minimum: </b> states that growth is controlled by the scarcest resource,
-            not the total amount of resources available. This law informs us that when any one resource
-            the plant requires is limited, it will limit the growth of the plant even if there is
-            an abundance of the other required resources. This is vital to simulating plant growht,
-            as it is a fundamental principle in plant physiology. This feature of plants allows us 
-            to show reduced growth if one of the essential inputs is below a certain threshold.</p>
-        <h2>Light Compensation and Light Saturation</h2>
-        <p><b>Light Compensation Point (LCP): </b> is the light level in which specific plants need to survive. 
-            Below this level the energy received from sunlight is below the level of the plants own respiration.
-            This means that the plant will slowly die while below LCP.
+    <main id="main-content" class="instrument-main">
+      <section class="subpage-header-card reveal-item">
+        <p class="eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          MOD · 04 · PHYSIOLOGICAL FOUNDATIONS
         </p>
-        <p><b>Light Compensation Point (LCP): </b> is the light level in which specific plants reach their
-            maximum level of photosynthesis. Beyond this level plants are unable to utilie the additional
-            sunlight and begin to suffer from the excess of light.</p>
-        <h2>Thermal Performance Curve</h2>
-        <p><b>Thermal Performance Curve (TPC): </b> is a curve that describes the relationship
-            between temperature and plant growth. Below and above temperature thresholds, plants are unable to grow, 
-            and have an optimal growing temperature at the top of these curves.<p>
-        <h2>Watering Levels</h2>
-        <p><b>Permanent Wilting Point (PWP): </b> is the soil water potential at which plants can no 
-          longer extract water from the soil. At this point, the plant begins to wilt and will 
-          eventually die if the condition persists. This condition results from low frequency watering.</p>
-        <p><b>Field Capacity (FC): </b> is the amount of water that can be held in the soil after excess 
-          water has drained away. This is an important factor in determining how often a plant needs to 
-          be watered. This is the optimal point of water for plant growth.</p>
-        <p><b>Anoxic Saturation Point (ASP): </b> is the soil water potential at which oxygen becomes 
-          limiting for plant roots. This condition can lead to root damage and reduced plant growth and is
-          caused by waterlogged soil.</p>
-        <h2>Pot Size Limitations</h2>
-        <p><b>Restricted Root Volume (RRV): </b> is the limited space available for root growth within a 
-          pot. This can lead to root circling, reduced nutrient uptake, and overall decreased plant 
-          health.</p>
-        <p><b>Critical Root Bound Threshold (CRBT)</b> is the point at which root growth is significantly limited by the
-           pot size. This can lead to root entanglement, reduced nutrient uptake, and overall decreased plant health.</p>
-        </section>
+        <h2>Botanical &amp; Physiological Principles</h2>
+        <p class="subpage-lead">
+          Core plant physiology laws governing the synthetic Golden Pothos growth model and environmental modifiers.
+        </p>
+        <div class="tick-ruler" aria-hidden="true"></div>
 
+        <div class="research-modules-grid">
+          <article class="research-module-card">
+            <span class="telemetry-pill">LAW · 01</span>
+            <h2>Liebeg's Law of Minimum</h2>
+            <p>
+              <b>Liebeg's Law of Minimum: </b> states that growth is controlled by the scarcest resource, not the total amount of resources available. This law informs us that when any one resource the plant requires is limited, it will limit the growth of the plant even if there is an abundance of the other required resources. This is vital to simulating plant growth, as it is a fundamental principle in plant physiology. This feature of plants allows us to show reduced growth if one of the essential inputs is below a certain threshold.
+            </p>
+          </article>
+
+          <article class="research-module-card">
+            <span class="telemetry-pill">PHOTOBIOLOGY · 02</span>
+            <h2>Light Compensation and Light Saturation</h2>
+            <p>
+              <b>Light Compensation Point (LCP): </b> is the light level in which specific plants need to survive. Below this level the energy received from sunlight is below the level of the plants own respiration. This means that the plant will slowly die while below LCP.
+            </p>
+            <p>
+              <b>Light Saturation Point (LSP): </b> is the light level in which specific plants reach their maximum level of photosynthesis. Beyond this level plants are unable to utilize the additional sunlight and begin to suffer from the excess of light.
+            </p>
+          </article>
+
+          <article class="research-module-card">
+            <span class="telemetry-pill">THERMODYNAMICS · 03</span>
+            <h2>Thermal Performance Curve</h2>
+            <p>
+              <b>Thermal Performance Curve (TPC): </b> is a curve that describes the relationship between temperature and plant growth. Below and above temperature thresholds, plants are unable to grow, and have an optimal growing temperature at the top of these curves.
+            </p>
+          </article>
+
+          <article class="research-module-card">
+            <span class="telemetry-pill">HYDROLOGY · 04</span>
+            <h2>Watering Levels</h2>
+            <p>
+              <b>Permanent Wilting Point (PWP): </b> is the soil water potential at which plants can no longer extract water from the soil. At this point, the plant begins to wilt and will eventually die if the condition persists. This condition results from low frequency watering.
+            </p>
+            <p>
+              <b>Field Capacity (FC): </b> is the amount of water that can be held in the soil after excess water has drained away. This is an important factor in determining how often a plant needs to be watered. This is the optimal point of water for plant growth.
+            </p>
+            <p>
+              <b>Anoxic Saturation Point (ASP): </b> is the soil water potential at which oxygen becomes limiting for plant roots. This condition can lead to root damage and reduced plant growth and is caused by waterlogged soil.
+            </p>
+          </article>
+
+          <article class="research-module-card">
+            <span class="telemetry-pill">RHIZOSPHERE · 05</span>
+            <h2>Pot Size Limitations</h2>
+            <p>
+              <b>Restricted Root Volume (RRV): </b> is the limited space available for root growth within a pot. This can lead to root circling, reduced nutrient uptake, and overall decreased plant health.
+            </p>
+            <p>
+              <b>Critical Root Bound Threshold (CRBT): </b> is the point at which root growth is significantly limited by the pot size. This can lead to root entanglement, reduced nutrient uptake, and overall decreased plant health.
+            </p>
+          </article>
+        </div>
+
+        <div class="button-row">
+          <a class="btn btn-primary" href="../mainPage.html#predict">Test Parameters in Predictor →</a>
+          <a class="btn btn-secondary" href="../mainPage.html">Return to Home Hub</a>
+        </div>
+      </section>
     </main>
 
-    <footer>
-      <p>&copy; 2026 Plant Simulation</p>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-meta">
+          <span class="status-dot" aria-hidden="true"></span>
+          <p>&copy; 2026 Plant Simulation</p>
+        </div>
+      </div>
     </footer>
-
   </body>
 </html>

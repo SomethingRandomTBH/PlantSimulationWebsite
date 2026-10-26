@@ -1,0 +1,48 @@
+/* ==========================================================================
+   COMPONENTS/FOOTER.CSS — Shared Instrument Footer
+   ========================================================================== */
+
+footer,
+.site-footer {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  background-color: var(--surface-footer);
+  color: #DCE5DD;
+  border-top: 1px solid rgba(167, 196, 160, 0.22);
+  padding: var(--space-6) 0;
+  font-size: var(--text-sm);
+}
+
+.footer-inner {
+  width: min(1280px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.footer-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.footer-meta p,
+footer p,
+.site-footer p {
+  color: #DCE5DD;
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.footer-telemetry {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: #A7C4A0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

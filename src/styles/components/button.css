@@ -1,0 +1,113 @@
+/* ==========================================================================
+   COMPONENTS/BUTTON.CSS — Instrument Buttons & Controls
+   ========================================================================== */
+
+.btn,
+.button,
+.primary-button,
+.secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--duration-fast) var(--ease-standard),
+              border-color var(--duration-fast) var(--ease-standard),
+              color var(--duration-fast) var(--ease-standard),
+              transform var(--duration-fast) var(--ease-standard),
+              box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+/* Primary Action Button */
+.btn-primary,
+.button,
+.primary-button {
+  background-color: var(--brand-green);
+  color: var(--text-on-brand);
+  border-color: var(--brand-green);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover:not(:disabled),
+.button:hover:not(:disabled),
+.primary-button:hover:not(:disabled) {
+  background-color: var(--brand-green-hover);
+  border-color: var(--brand-green-hover);
+  color: var(--text-on-brand);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.btn-primary:active:not(:disabled),
+.button:active:not(:disabled),
+.primary-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Secondary / Outline Button */
+.btn-secondary,
+.button-secondary,
+.secondary-button {
+  background-color: var(--surface-secondary);
+  color: var(--heading-color);
+  border-color: var(--border-strong);
+}
+
+.btn-secondary:hover:not(:disabled),
+.button-secondary:hover:not(:disabled),
+.secondary-button:hover:not(:disabled) {
+  background-color: var(--surface-highlight);
+  border-color: var(--accent);
+  color: var(--heading-color);
+}
+
+/* Ghost / Telemetry Action Button */
+.btn-ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+  min-height: 38px;
+  padding: 0.45rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--surface-secondary);
+  border-color: var(--border-strong);
+  color: var(--heading-color);
+}
+
+.btn:disabled,
+.button:disabled,
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-row,
+.form-actions-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.form-actions-row .primary-button {
+  flex: 1 1 220px;
+  margin-top: 0;
+}

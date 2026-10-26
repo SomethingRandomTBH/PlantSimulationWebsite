@@ -7,34 +7,93 @@
     <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
     <link rel="manifest" href="../images/site.webmanifest">
-    <title>The Botanists' Plant Simulation</title>
+    <title>About | The Botanists' Plant Simulation</title>
     <link rel="stylesheet" href="../styles/style.css">
     <script src="../scripts/main.js"></script>
   </head>
   <body>
-    <header>
-      <h1>The Botanists' Plant Simulation</h1>
-      <nav>
-        <a href="../mainPage.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="planning.html">Plan</a>
-        <a href="team.html">Team</a>
-        <a href="research.html">Research</a>
-        <a href="prediction.html">Predict Growth</a>
-      </nav>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="topbar site-header">
+      <div class="topbar-inner">
+        <div class="topbar-brand-group">
+          <a class="topbar-wordmark" href="../mainPage.html">
+            <span class="topbar-status-dot" aria-hidden="true"></span>
+            <h1>The Botanists' Plant Simulation</h1>
+          </a>
+          <span class="topbar-telemetry-tag">MOD · 01</span>
+        </div>
+
+        <div class="topbar-actions">
+          <a class="topbar-back-link" href="../mainPage.html" aria-label="Return to Home Instrument Hub">
+            <span aria-hidden="true">←</span>
+            <span>Home</span>
+          </a>
+          <div class="theme-control">
+            <label class="theme-switch" for="theme-toggle">
+              <span class="theme-switch-label">Dark mode</span>
+              <input type="checkbox" id="theme-toggle" role="switch" aria-label="Toggle dark mode">
+              <span class="theme-switch-track" aria-hidden="true">
+                <span class="theme-switch-thumb"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <main>
-      <section>
-        <h2>About Plant Simulation</h2>
-        <p>Our project is designed to use machine learning to understand the development process of common house plants.
+    <main id="main-content" class="instrument-main">
+      <section class="subpage-header-card reveal-item">
+        <p class="eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          MOD · 01 · SYSTEM ARCHITECTURE &amp; MISSION
         </p>
+        <h2>About Plant Simulation</h2>
+        <p class="subpage-lead">
+          Our project is designed to use machine learning to understand the development process of common house plants, translating environmental telemetry into calibrated growth forecasts and actionable horticultural care plans.
+        </p>
+        <div class="tick-ruler" aria-hidden="true"></div>
+
+        <div class="spec-grid">
+          <div class="spec-card">
+            <span class="telemetry-pill">SIMULATION COHORT</span>
+            <h3>Physiology-Guided Synthetic Data</h3>
+            <p>
+              Models Golden Pothos (<em>Epipremnum aureum</em>) across 2,000 simulated plants tracked over 104 weekly intervals (208,000 observations), incorporating light saturation, thermal curves, pot root capacity, and maturity ramps.
+            </p>
+          </div>
+
+          <div class="spec-card">
+            <span class="telemetry-pill telemetry-pill-sage">CONFORMAL RF</span>
+            <h3>Calibrated Uncertainty</h3>
+            <p>
+              Uses a 100-tree Random Forest regressor paired with split-conformal calibration on held-out plants to provide a 90% prediction interval (±0.19 inches) alongside 7-day, 14-day, and 28-day sequential forecasts.
+            </p>
+          </div>
+
+          <div class="spec-card">
+            <span class="telemetry-pill">MULTIMODAL AI</span>
+            <h3>Gemini Botanical Diagnostics</h3>
+            <p>
+              Combines quantitative model forecasts and optional plant photographs to generate structured horticultural assessments, plausibility checks, and seasonal care guides.
+            </p>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <a class="btn btn-primary" href="../mainPage.html#predict">Open Growth Predictor →</a>
+          <a class="btn btn-secondary" href="../mainPage.html">Return to Home Hub</a>
+        </div>
       </section>
     </main>
 
-    <footer>
-      <p>&copy; 2026 Plant Simulation</p>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-meta">
+          <span class="status-dot" aria-hidden="true"></span>
+          <p>&copy; 2026 Plant Simulation</p>
+        </div>
+      </div>
     </footer>
-
   </body>
 </html>

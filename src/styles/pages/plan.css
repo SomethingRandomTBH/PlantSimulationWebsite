@@ -1,0 +1,31 @@
+/* ==========================================================================
+   PAGES/PLAN.CSS — Development Roadmap & Phase Matrix
+   ========================================================================== */
+
+.phase-timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-5);
+  margin-top: var(--space-5);
+}
+
+.phase-card {
+  background-color: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.phase-card h3 {
+  font-size: var(--text-md);
+  color: var(--heading-color);
+}
+
+.phase-card p {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}

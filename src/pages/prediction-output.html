@@ -3,142 +3,148 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
     <link rel="manifest" href="../images/site.webmanifest">
-
-    <title>Growth Forecast | The Botanists' Plant Simulation</title>
-
+    <title>Growth Forecast Report | The Botanists' Plant Simulation</title>
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/prediction-output.css">
     <script src="../scripts/main.js"></script>
   </head>
 
   <body>
-    <header>
-      <h1>The Botanists' Plant Simulation</h1>
+    <a class="skip-link" href="#main-content">Skip to forecast report</a>
 
-      <nav>
-        <a href="../mainPage.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="planning.html">Plan</a>
-        <a href="team.html">Team</a>
-        <a href="research.html">Research</a>
-        <a href="prediction.html">Predict Growth</a>
-      </nav>
+    <header class="topbar site-header">
+      <div class="topbar-inner">
+        <div class="topbar-brand-group">
+          <a class="topbar-wordmark" href="../mainPage.html">
+            <span class="topbar-status-dot" aria-hidden="true"></span>
+            <h1>The Botanists' Plant Simulation</h1>
+          </a>
+          <span class="topbar-telemetry-tag">REPORT · 7D/28D</span>
+        </div>
+
+        <div class="topbar-actions">
+          <a class="topbar-back-link" href="../mainPage.html" aria-label="Return to Home Instrument Hub">
+            <span aria-hidden="true">←</span>
+            <span>Home</span>
+          </a>
+          <div class="theme-control">
+            <label class="theme-switch" for="theme-toggle">
+              <span class="theme-switch-label">Dark mode</span>
+              <input type="checkbox" id="theme-toggle" role="switch" aria-label="Toggle dark mode">
+              <span class="theme-switch-track" aria-hidden="true">
+                <span class="theme-switch-thumb"></span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
     </header>
 
-    <main>
+    <main id="main-content" class="instrument-main">
       <!-- Shown when there is no prediction to display -->
-      <section id="no-data" hidden>
-        <h2>No forecast to show yet</h2>
-
-        <p>
-          Enter your plant's current conditions on the prediction page
-          and run a prediction. Your results will appear here.
+      <section id="no-data" class="card" hidden>
+        <p class="eyebrow">
+          <span class="status-dot status-dot-warn" aria-hidden="true"></span>
+          TELEMETRY BUFFER EMPTY
         </p>
-
+        <h2 style="margin: 0.5rem 0;">No forecast to show yet</h2>
+        <p>
+          Enter your plant's current conditions in the growth predictor on the home page and run a prediction. Your results will appear there and in this standalone report view.
+        </p>
         <div class="button-row">
-          <a class="button" href="prediction.html">Go to Predict Growth</a>
+          <a class="button btn btn-primary" href="../mainPage.html#predict">Go to Predict Growth</a>
         </div>
       </section>
 
       <!-- Shown when a prediction is available -->
       <div id="output" hidden>
-        <section>
-          <h2 style="text-align: center;">Your Golden Pothos Forecast</h2>
+        <section class="card">
+          <div class="section-header-bar">
+            <span class="section-coordinate">01 · PRIMARY 7-DAY GROWTH FORECAST</span>
+            <span class="telemetry-pill telemetry-pill-sage">CONFORMAL · 90% COVERAGE</span>
+          </div>
 
-          <p class="lead" style="text-align: center;">
-          Sequential Random Forest estimates for weeks 1, 2, and 4,
-          using the simulated plant conditions from each preceding week.
-        </p>
+          <h2>Your Golden Pothos Forecast</h2>
+          <p class="lead" style="margin: 0.35rem 0 1.25rem;">
+            Sequential Random Forest estimates for weeks 1, 2, and 4, using the simulated plant conditions from each preceding week.
+          </p>
 
           <div class="result-grid">
             <div class="result-card">
               <span class="result-label">Predicted stem growth</span>
-
-
               <div class="result-value">
                 <span id="growth-result">&mdash;</span>
                 <span class="result-unit">inches</span>
               </div>
-
               <p>Estimated additional vine length over 7 days.</p>
             </div>
-              
+
             <div class="result-card result-card-highlight">
               <span class="result-label">
                 Expected growth range (90% prediction interval)
               </span>
-
               <div class="result-value">
                 <span id="growth-lower-result">&mdash;</span>
                 <span class="result-unit">to</span>
                 <span id="growth-upper-result">&mdash;</span>
                 <span class="result-unit">inches</span>
               </div>
-
               <p>
-                A range estimated from errors on held-out calibration plants.
-                Actual growth may fall outside this range.
+                A range estimated from errors on held-out calibration plants. Actual growth may fall outside this range.
               </p>
             </div>
 
             <div class="result-card">
               <span class="result-label">Estimated total leaf count</span>
-
               <div class="result-value">
                 <span id="leaf-result">&mdash;</span>
                 <span class="result-unit">leaves</span>
               </div>
-
-              <p>Model estimate for the current total leaf count.</p>
+              <p>Model estimate for the projected total leaf count.</p>
             </div>
 
             <div class="result-card result-card-highlight">
               <span class="result-label">Whole-leaf estimate</span>
-
               <div class="result-value">
                 <span id="rounded-leaf-result">&mdash;</span>
                 <span class="result-unit">leaves</span>
               </div>
-
               <p>Rounded version of the total leaf-count prediction.</p>
             </div>
           </div>
 
-          <h3 style="color: inherit;">How to interpret this</h3>
-          <p id="result-explanation"></p>
+          <h3 style="margin-top: 1.5rem;">How to interpret this</h3>
+          <p id="result-explanation" class="explanation-callout"></p>
         </section>
 
-        
-        <section id="multiweek-section">
-          <h2 style="text-align: center;">Extended Growth Forecast</h2>
+        <section id="multiweek-section" class="card">
+          <div class="section-header-bar">
+            <span class="section-coordinate">02 · EXTENDED SEQUENTIAL FORECAST</span>
+            <span class="telemetry-pill">HORIZON · 14D &amp; 28D</span>
+          </div>
 
-          <p class="lead" style="text-align: center;">
-            Each forecast builds on the simulated plant state from the
-            previous week. Environmental conditions remain unchanged.
+          <h2>Extended Growth Forecast</h2>
+          <p class="lead" style="margin: 0.35rem 0 1.25rem;">
+            Each forecast builds on the simulated plant state from the previous week. Environmental conditions remain unchanged.
           </p>
 
           <div class="result-grid">
             <div class="result-card">
               <span class="result-label">2-week forecast</span>
-
               <div class="result-value">
                 <span id="week-2-length">&mdash;</span>
                 <span class="result-unit">inches</span>
                 <p id="week-2-range-note" class="growth-range-note"></p>
               </div>
-
               <p>Projected total vine length after 14 days.</p>
-
               <p>
                 Cumulative growth:
                 <strong><span id="week-2-growth">&mdash;</span> inches</strong>
               </p>
-
               <p>
                 Projected total leaves:
                 <strong><span id="week-2-leaves">&mdash;</span></strong>
@@ -147,20 +153,16 @@
 
             <div class="result-card result-card-highlight">
               <span class="result-label">4-week forecast</span>
-
               <div class="result-value">
                 <span id="week-4-length">&mdash;</span>
                 <span class="result-unit">inches</span>
                 <p id="week-4-range-note" class="growth-range-note"></p>
               </div>
-
               <p>Projected total vine length after 28 days.</p>
-
               <p>
                 Cumulative growth:
                 <strong><span id="week-4-growth">&mdash;</span> inches</strong>
               </p>
-
               <p>
                 Projected total leaves:
                 <strong><span id="week-4-leaves">&mdash;</span></strong>
@@ -168,26 +170,28 @@
             </div>
           </div>
 
-          <p id="multiweek-explanation" class="lead"></p>
+          <p id="multiweek-explanation" class="explanation-callout"></p>
         </section>
 
+        <section id="summary-section" class="card" aria-labelledby="summary-title">
+          <div class="section-header-bar">
+            <span class="section-coordinate">03 · BOTANICAL DIAGNOSTIC SUMMARY</span>
+            <span class="telemetry-pill telemetry-pill-sage">GEMINI · MULTIMODAL</span>
+          </div>
 
-        <section id="summary-section" aria-labelledby="summary-title">
-          <h2 id="summary-title" style="text-align: center;">AI-Generated Summary</h2>
-
-          <p class="lead" style="text-align: center;">
-            <em>
-              Provided by Google Gemini. Note: Gemini is AI and in the current environment lacks important inputs,
-              such as vision. It is important to double-check the information provided.
-            </em>
+          <h2 id="summary-title">AI-Generated Summary</h2>
+          <p class="lead" style="margin: 0.35rem 0 1.25rem;">
+            Provided by Google Gemini using your entered plant conditions, Random Forest forecasts, and optional plant photo. Always verify recommendations against physical soil and foliage checks.
           </p>
 
           <div class="llm-box">
             <div class="llm-box-header">
-              <span class="llm-box-label">Gemini summary</span>
+              <span class="llm-box-label">
+                <span class="status-dot" aria-hidden="true"></span>
+                Gemini summary
+              </span>
 
               <div class="llm-box-actions">
-                <!-- Disabled while a summary is being generated. -->
                 <button
                   id="reprompt-button"
                   class="copy-button"
@@ -195,22 +199,11 @@
                   aria-label="Generate a new summary"
                   disabled
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="23 4 23 10 17 10"></polyline>
                     <polyline points="1 20 1 14 7 14"></polyline>
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                   </svg>
-
                   <span id="reprompt-label">Regenerate</span>
                 </button>
 
@@ -221,21 +214,10 @@
                   aria-label="Copy summary to clipboard"
                   disabled
                 >
-                  <svg
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <rect x="9" y="9" width="13" height="13" rx="2"></rect>
                     <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                   </svg>
-
                   <span id="copy-label">Copy</span>
                 </button>
               </div>
@@ -247,16 +229,10 @@
                 <span>Writing your summary&hellip;</span>
               </div>
 
-              <!-- Must be a div so rendered Markdown can contain block elements. -->
-              <div
-                id="summary-text"
-                class="llm-text markdown-body"
-                hidden
-              ></div>
+              <div id="summary-text" class="llm-text markdown-body" hidden></div>
 
               <div id="summary-error" class="llm-error" hidden>
                 <p id="summary-error-message"></p>
-
                 <button id="retry-button" class="llm-retry" type="button">
                   Try again
                 </button>
@@ -265,39 +241,39 @@
           </div>
         </section>
 
-        <section>
+        <section class="card">
+          <div class="section-header-bar">
+            <span class="section-coordinate">04 · SPECIMEN INPUT LOG</span>
+          </div>
           <h2>Conditions You Entered</h2>
 
-          <table class="input-table">
+          <table class="input-table" style="margin-top: 0.75rem;">
             <tbody id="input-summary"></tbody>
           </table>
 
           <div class="button-row">
-            <a class="button" href="prediction.html">Start a new prediction</a>
-            <a class="button button-secondary" href="../mainPage.html">Back to home</a>
+            <a class="button btn btn-primary" href="../mainPage.html#predict">Start a new prediction</a>
+            <a class="button button-secondary btn btn-secondary" href="../mainPage.html">Back to home</a>
           </div>
         </section>
 
-        <section>
-          <h2 style="font-size: 1.5rem; font-weight: normal; text-align: center; color: inherit;">
-            <em>About These Estimates</em>
-          </h2>
-
-          <p class="lead" style="text-align: center;">
-            <em>
-              This model was trained on synthetic pothos data. Its reported
-              accuracy measures performance on simulated plants and may not
-              reflect real-world accuracy. The healthy-plant simulation assumes
-              no leaf loss. Predictions are estimates, not guaranteed
-              biological outcomes. Lux is also not a accurate way to describe incoming light for a plant, however it can be used as a rough estimate.
-            </em>
+        <section class="disclaimer">
+          <strong>About These Estimates</strong>
+          <p>
+            This model was trained on synthetic pothos data. Its reported accuracy measures performance on simulated plants and may not reflect real-world accuracy. The healthy-plant simulation assumes no leaf loss. Predictions are estimates, not guaranteed biological outcomes. Lux is a rough estimate for incoming photosynthetically active light.
           </p>
         </section>
       </div>
     </main>
 
-    <footer>
-      <p>&copy; 2026 Plant Simulation</p>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-meta">
+          <span class="status-dot" aria-hidden="true"></span>
+          <p>&copy; 2026 The Botanists' Plant Simulation · Golden Pothos Growth Instrument</p>
+        </div>
+        <span class="footer-telemetry">SYNTHETIC RF · 90% CONFORMAL · GEMINI DIAGNOSTICS</span>
+      </div>
     </footer>
 
     <script src="../scripts/prediction-output.js"></script>

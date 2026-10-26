@@ -1,4 +1,6 @@
-
+import base64
+import io
+import json
 import os
 import sys
 import subprocess
@@ -8,6 +10,7 @@ import joblib
 import numpy as np
 import pandas as pd
 import requests
+from PIL import Image, UnidentifiedImageError
 
 from flask import Flask, jsonify, request, send_from_directory
 
@@ -53,16 +56,29 @@ REQUIRED_FIELDS = [
 ]
 
 GEMINI_MODEL = os.environ.get(
-    "GEMINI_MODEL", "gemini-3.5-flash-lite"
+    "GEMINI_MODEL", "gemini-2.5-flash-lite"
+)
+GEMINI_FALLBACK_MODELS = (
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
 )
 GEMINI_URL = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
     "{model}:generateContent"
 )
 GEMINI_TIMEOUT_SECONDS = 30
-GEMINI_MAX_OUTPUT_TOKENS = 2048
+GEMINI_MAX_OUTPUT_TOKENS = 4096
 GEMINI_THINKING_LEVEL = os.environ.get("GEMINI_THINKING_LEVEL")
 GEMINI_THINKING_BUDGET = os.environ.get("GEMINI_THINKING_BUDGET")
+
+MAX_IMAGE_BYTES = 5 * 1024 * 1024  # 5 MB maximum upload size
+MAX_IMAGE_DIMENSION = 4096         # Maximum width or height in pixels
+ALLOWED_IMAGE_MIMES = frozenset({
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+})
 
 
 def ensure_model_exists():
@@ -138,7 +154,6 @@ print(
 )
 
 
-
 class InputError(Exception):
     pass
 
@@ -184,6 +199,129 @@ def parse_inputs(payload):
         raise InputError("Unsupported humidity level.")
 
     return {**numeric, "Humidity_Level": humidity}
+
+
+def detect_image_mime_from_magic(raw_bytes):
+    """Inspect magic bytes at the start of the file buffer."""
+    if not isinstance(raw_bytes, (bytes, bytearray)) or len(raw_bytes) < 12:
+        return None
+
+    if raw_bytes.startswith(b"\xff\xd8\xff"):
+        return "image/jpeg"
+
+    if raw_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        return "image/png"
+
+    if raw_bytes[:4] == b"RIFF" and raw_bytes[8:12] == b"WEBP":
+        return "image/webp"
+
+    return None
+
+
+def validate_uploaded_image(file_storage):
+    """Validate an optional uploaded image in memory without writing to disk."""
+    if file_storage is None:
+        return None
+
+    filename = getattr(file_storage, "filename", None)
+    if filename is not None and str(filename).strip() == "":
+        return None
+
+    stream = getattr(file_storage, "stream", file_storage)
+    try:
+        stream.seek(0)
+    except (AttributeError, OSError):
+        pass
+
+    raw_bytes = stream.read(MAX_IMAGE_BYTES + 1)
+
+    if not raw_bytes:
+        raise InputError("The uploaded photo file is empty.")
+
+    if len(raw_bytes) > MAX_IMAGE_BYTES:
+        raise InputError(
+            "The uploaded photo exceeds the maximum file size of 5 MB."
+        )
+
+    mime_type = detect_image_mime_from_magic(raw_bytes)
+    if mime_type not in ALLOWED_IMAGE_MIMES:
+        raise InputError(
+            "Unsupported image file type. Please upload a JPEG, PNG, or WebP photo."
+        )
+
+    try:
+        with Image.open(io.BytesIO(raw_bytes)) as img_verify:
+            img_verify.verify()
+        with Image.open(io.BytesIO(raw_bytes)) as img:
+            width, height = img.size
+            detected_format = (img.format or "").upper()
+    except (UnidentifiedImageError, Image.DecompressionBombError, OSError, ValueError):
+        raise InputError(
+            "The uploaded photo is corrupted or could not be decoded."
+        ) from None
+
+    expected_formats = {
+        "image/jpeg": "JPEG",
+        "image/png": "PNG",
+        "image/webp": "WEBP",
+    }
+    if detected_format != expected_formats.get(mime_type):
+        raise InputError(
+            "Image header does not match its internal image structure."
+        )
+
+    if width < 1 or height < 1:
+        raise InputError("The uploaded photo has invalid dimensions.")
+
+    if width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
+        raise InputError(
+            f"Image dimensions ({width}x{height}px) exceed the "
+            f"maximum allowed dimension of {MAX_IMAGE_DIMENSION}px."
+        )
+
+    return {
+        "mime_type": mime_type,
+        "data": base64.b64encode(raw_bytes).decode("ascii"),
+        "width": int(width),
+        "height": int(height),
+    }
+
+
+def parse_request_inputs_and_image():
+    """Extract plant inputs and optional image from JSON or multipart/form-data."""
+    content_type = (request.content_type or "").lower()
+
+    if content_type.startswith("multipart/form-data"):
+        payload = {}
+        raw_inputs_json = request.form.get("inputs")
+        if raw_inputs_json:
+            try:
+                parsed_json = json.loads(raw_inputs_json)
+                if isinstance(parsed_json, dict):
+                    payload.update(parsed_json)
+            except ValueError:
+                raise InputError("Invalid JSON in 'inputs' form field.") from None
+
+        for key in REQUIRED_FIELDS:
+            if key in request.form:
+                payload[key] = request.form.get(key)
+
+        inputs = parse_inputs(payload)
+
+        file_storage = (
+            request.files.get("photo")
+            or request.files.get("image")
+            or request.files.get("plant_photo")
+        )
+        if file_storage is None and request.files:
+            file_storage = next(iter(request.files.values()), None)
+
+        image_part = validate_uploaded_image(file_storage)
+        return inputs, image_part
+
+    payload = request.get_json(silent=True)
+    inputs = parse_inputs(payload)
+    return inputs, None
 
 
 def run_model(inputs):
@@ -343,39 +481,77 @@ def fmt(value):
     return f"{value:,.3f}".rstrip("0").rstrip(".")
 
 
-def build_user_prompt(inputs, outputs):
+def build_user_prompt(inputs, outputs, multiweek=None, has_image=False):
+    now = datetime.now().astimezone()
+    current_date_iso = now.strftime("%Y-%m-%d")
     projected_length = round(
         inputs["Stem_Length_Inches"]
         + outputs["predicted_growth_inches"], 2
     )
+    baseline_leaves = round(
+        inputs["Stem_Length_Inches"] / AVERAGE_LEAF_SPACING_INCHES, 2
+    )
 
     lines = [
+        f"Current_Date: {current_date_iso}",
         "Current date and time: "
-        f"{datetime.now().astimezone().strftime('%A, %B %d, %Y, %I:%M %p %Z')}",
+        f"{now.strftime('%A, %B %d, %Y, %I:%M %p %Z')}",
         "",
         "CONDITIONS ENTERED BY THE USER",
-        f"Plant age: {fmt(inputs['Age_Days'])} days",
-        f"Current vine length: {fmt(inputs['Stem_Length_Inches'])} inches",
-        f"Current leaf count: {fmt(inputs['Leaf_Count'])}",
-        f"Pot diameter: {fmt(inputs['Pot_Size_Inches'])} inches",
-        f"Light level: {fmt(inputs['Light_Lux'])} lux",
-        f"Water per watering: {fmt(inputs['Watering_Volume_mL'])} mL",
-        f"Watering interval: every {fmt(inputs['Watering_Freq_Days'])} days",
-        f"Temperature: {fmt(inputs['Temperature_F'])} degrees F",
-        f"Humidity level: {inputs['Humidity_Level']}",
+        f"Plant age (Age_Days): {fmt(inputs['Age_Days'])} days",
+        f"Current vine length (Stem_Length_Inches): {fmt(inputs['Stem_Length_Inches'])} inches",
+        f"Current leaf count (Leaf_Count): {fmt(inputs['Leaf_Count'])}",
+        f"Baseline leaf count from stem length (Stem_Length_Baseline_Leaf_Count): {fmt(baseline_leaves)}",
+        f"Pot diameter (Pot_Size_Inches): {fmt(inputs['Pot_Size_Inches'])} inches",
+        f"Light level (Light_Lux): {fmt(inputs['Light_Lux'])} lux",
+        f"Water per watering (Watering_Volume_mL): {fmt(inputs['Watering_Volume_mL'])} mL",
+        f"Watering interval (Watering_Freq_Days): every {fmt(inputs['Watering_Freq_Days'])} days",
+        f"Temperature (Temperature_F): {fmt(inputs['Temperature_F'])} degrees F",
+        f"Humidity level (Humidity_Level): {inputs['Humidity_Level']}",
         "",
-        "MODEL OUTPUTS",
-        f"Predicted stem growth over the next 7 days: {fmt(outputs['predicted_growth_inches'])} inches",
+        "MODEL OUTPUTS (7-DAY FORECAST)",
+        f"Predicted stem growth over the next 7 days (Predicted_Growth_Inches): {fmt(outputs['predicted_growth_inches'])} inches",
+        f"90% prediction interval for 7-day growth: {fmt(outputs['predicted_growth_lower_inches'])} to {fmt(outputs['predicted_growth_upper_inches'])} inches (margin ±{fmt(outputs['growth_margin_of_error_inches'])} inches)",
         f"Projected vine length after 7 days: {fmt(projected_length)} inches",
         f"Estimated new leaves: {fmt(outputs['predicted_new_leaves'])}",
         f"Rounded estimated new leaves: {outputs['rounded_predicted_new_leaves']}",
-        f"Projected total leaf count: {fmt(outputs['predicted_total_leaf_count'])}",
-        f"Rounded projected total leaf count: {outputs['rounded_predicted_total_leaf_count']}",
+        f"Projected total leaf count (Predicted_Total_Leaf_Count): {fmt(outputs['predicted_total_leaf_count'])}",
+        f"Rounded projected total leaf count (Rounded_Predicted_Total_Leaf_Count): {outputs['rounded_predicted_total_leaf_count']}",
+    ]
+
+    if isinstance(multiweek, dict):
+        week2 = multiweek.get("week_2")
+        week4 = multiweek.get("week_4")
+        if week2 and week4:
+            lines.extend([
+                "",
+                "SEQUENTIAL MULTIWEEK FORECASTS",
+                f"Week 2 (14 days): projected vine length {fmt(week2['projected_stem_length_inches'])} inches "
+                f"(cumulative growth {fmt(week2['cumulative_growth_inches'])} inches, "
+                f"projected total leaves {week2['rounded_projected_total_leaf_count']})",
+                f"Week 4 (28 days): projected vine length {fmt(week4['projected_stem_length_inches'])} inches "
+                f"(cumulative growth {fmt(week4['cumulative_growth_inches'])} inches, "
+                f"projected total leaves {week4['rounded_projected_total_leaf_count']})",
+            ])
+
+    lines.extend([
         "",
         "The only machine-learning model used is the stem-growth model. "
         "New leaves are estimated by dividing growth by 1.2 inches per "
         "leaf. This is an approximation, not a separate model prediction.",
-    ]
+    ])
+
+    if has_image:
+        lines.extend([
+            "",
+            "ATTACHED PLANT PHOTO",
+            "The user also provided a photo of their plant as an inline image. "
+            "Inspect the visual appearance of the plant (leaf color, variegation, "
+            "foliage density, node spacing, turgor, and visible container/substrate cues) "
+            "and incorporate relevant visual observations into your assessment alongside "
+            "the numerical measurements above.",
+        ])
+
     return "\n".join(lines)
 
 
@@ -396,19 +572,29 @@ def extract_text(data):
 
     # Gemini sometimes writes HTML entities such as "&nbsp;" as spacing.
     # The page escapes raw HTML, so they would show up as literal text.
-    text = text.replace("&nbsp;", " ")
+    text = (
+        text.replace("&nbsp;", " ")
+        .replace("&mdash;", "—")
+        .replace("&ndash;", "–")
+        .replace("&deg;", "°")
+    )
 
     if not text:
+        finish_reason = candidate.get("finishReason")
         app.logger.error(
             "Empty Gemini response; finish reason: %s",
-            candidate.get("finishReason"),
+            finish_reason,
         )
+        if finish_reason == "SAFETY":
+            raise GeminiError(
+                "The summary could not be generated due to content safety filters."
+            )
         raise GeminiError("The summary service returned an empty summary.")
 
     return text
 
 
-def call_gemini(system_prompt, user_prompt):
+def call_gemini(system_prompt, user_prompt, image_part=None):
     api_key = load_api_key()
     if not api_key:
         raise GeminiError(
@@ -416,10 +602,19 @@ def call_gemini(system_prompt, user_prompt):
             "or set GEMINI_API_KEY.", 503
         )
 
+    user_parts = [{"text": user_prompt}]
+    if image_part is not None:
+        user_parts.append({
+            "inline_data": {
+                "mime_type": image_part["mime_type"],
+                "data": image_part["data"],
+            }
+        })
+
     body = {
         "system_instruction": {"parts": [{"text": system_prompt}]},
         "contents": [
-            {"role": "user", "parts": [{"text": user_prompt}]}
+            {"role": "user", "parts": user_parts}
         ],
         "generationConfig": {
             "maxOutputTokens": GEMINI_MAX_OUTPUT_TOKENS
@@ -427,12 +622,14 @@ def call_gemini(system_prompt, user_prompt):
     }
 
     thinking = {}
-    if GEMINI_THINKING_LEVEL:
-        thinking["thinkingLevel"] = GEMINI_THINKING_LEVEL
-
-    if GEMINI_THINKING_BUDGET is not None:
+    if GEMINI_THINKING_LEVEL and str(GEMINI_THINKING_LEVEL).strip():
+        thinking["thinkingLevel"] = str(GEMINI_THINKING_LEVEL).strip()
+    elif (
+        GEMINI_THINKING_BUDGET is not None
+        and str(GEMINI_THINKING_BUDGET).strip() != ""
+    ):
         try:
-            thinking["thinkingBudget"] = int(GEMINI_THINKING_BUDGET)
+            thinking["thinkingBudget"] = int(str(GEMINI_THINKING_BUDGET).strip())
         except ValueError:
             raise GeminiError(
                 "GEMINI_THINKING_BUDGET must be an integer.", 500
@@ -441,23 +638,40 @@ def call_gemini(system_prompt, user_prompt):
     if thinking:
         body["generationConfig"]["thinkingConfig"] = thinking
 
-    try:
-        response = requests.post(
-            GEMINI_URL.format(model=GEMINI_MODEL),
-            headers={
-                "Content-Type": "application/json",
-                "x-goog-api-key": api_key,
-            },
-            json=body,
-            timeout=GEMINI_TIMEOUT_SECONDS,
-        )
-    except requests.Timeout:
-        raise GeminiError(
-            "The summary service took too long to respond.", 504
-        ) from None
-    except requests.RequestException:
-        app.logger.exception("Could not reach the Gemini API.")
-        raise GeminiError("Couldn't reach the summary service.") from None
+    models_to_try = [GEMINI_MODEL]
+    for fallback_model in GEMINI_FALLBACK_MODELS:
+        if fallback_model not in models_to_try:
+            models_to_try.append(fallback_model)
+
+    response = None
+    for idx, model_name in enumerate(models_to_try):
+        try:
+            response = requests.post(
+                GEMINI_URL.format(model=model_name),
+                headers={
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": api_key,
+                },
+                json=body,
+                timeout=GEMINI_TIMEOUT_SECONDS,
+            )
+        except requests.Timeout:
+            raise GeminiError(
+                "The summary service took too long to respond.", 504
+            ) from None
+        except requests.RequestException:
+            app.logger.exception("Could not reach the Gemini API.")
+            raise GeminiError("Couldn't reach the summary service.") from None
+
+        # If the primary model ID returns 404 (e.g. a deprecated/invalid model string),
+        # fall back to the next known valid Gemini model.
+        if response.status_code == 404 and idx + 1 < len(models_to_try):
+            app.logger.warning(
+                "Gemini model '%s' returned 404; retrying with fallback model.",
+                model_name,
+            )
+            continue
+        break
 
     if response.status_code != 200:
         app.logger.error(
@@ -482,7 +696,7 @@ def call_gemini(system_prompt, user_prompt):
 
 @app.get("/")
 def home():
-    return send_from_directory(PAGES_DIR, "prediction.html")
+    return send_from_directory(SRC_DIR, "mainPage.html")
 
 
 @app.get("/mainPage.html")
@@ -510,11 +724,10 @@ def serve_pages(filename):
     return send_from_directory(PAGES_DIR, filename)
 
 
-
 @app.post("/api/predict")
 def predict():
     try:
-        inputs = parse_inputs(request.get_json(silent=True))
+        inputs, _ = parse_request_inputs_and_image()
     except InputError as error:
         return jsonify({"error": str(error)}), 400
 
@@ -527,25 +740,35 @@ def predict():
     return jsonify(result)
 
 
-
 @app.post("/api/summarize")
 def summarize():
     try:
-        inputs = parse_inputs(request.get_json(silent=True))
+        inputs, image_part = parse_request_inputs_and_image()
     except InputError as error:
         return jsonify({"error": str(error)}), 400
 
     outputs = run_model(inputs)
+    multiweek = run_multiweek_forecast(inputs)
 
     try:
         summary = call_gemini(
             load_system_prompt(),
-            build_user_prompt(inputs, outputs),
+            build_user_prompt(
+                inputs,
+                outputs,
+                multiweek=multiweek,
+                has_image=image_part is not None,
+            ),
+            image_part=image_part,
         )
     except GeminiError as error:
         return jsonify({"error": error.message}), error.status
 
-    return jsonify({"summary": summary})
+    response_payload = {"summary": summary}
+    if image_part is not None:
+        response_payload["used_photo"] = True
+
+    return jsonify(response_payload)
 
 
 if __name__ == "__main__":

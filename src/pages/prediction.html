@@ -1,218 +1,39 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Predict Golden Pothos growth using a Random Forest model.">
-  <title>Golden Pothos Growth Predictor</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
-  <link rel="manifest" href="../images/site.webmanifest">
-  <link rel="stylesheet" href="../styles/style.css">
-  <link rel="stylesheet" href="../styles/prediction.css">
-  <script src="../scripts/main.js"></script>
-  <script src="../scripts/prediction.js" defer></script>
-</head>
-
-<body>
-  <header class="site-header">
-  <h1>The Botanists' Plant Simulation</h1>
-
-  <nav class="site-nav">
-    <a href="../mainPage.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="planning.html">Plan</a>
-    <a href="team.html">Team</a>
-    <a href="research.html">Research</a>
-    <a href="prediction.html" class="active" aria-current="page">
-      Predict Growth
-    </a>
-  </nav>
-</header>
-
-
-  <main class="container">
-    <section class="hero">
-      <p class="eyebrow">GOLDEN POTHOS · GROWTH FORECAST</p>
-      <h1>Get to know your plant's next week.</h1>
-      <p class="hero-description">
-        Enter your pothos's current conditions to estimate its next
-        seven days of growth and its total leaf count.
-      </p>
-      <div class="forecast-tag">7-day forecast</div>
-    </section>
-
-    <div class="content-grid">
-      <section class="panel input-panel">
-        <div class="panel-heading">
-          <div>
-            <h2>Your plant</h2>
-            <p>Enter the current plant measurements.</p>
-          </div>
-          <span class="step-number">01</span>
-        </div>
-
-        <form id="prediction-form">
-          <div class="form-grid">
-            <div class="field">
-              <label for="age">Plant age (days)</label>
-              <input id="age" name="Age_Days" type="number"
-                     min="1" max="358" step="1" value="90" required>
-              <small>1–358 days</small>
-            </div>
-
-            <div class="field">
-              <label for="stem">Total vine length (inches)</label>
-              <input id="stem" name="Stem_Length_Inches" type="number"
-                     min="0.1" max="500" step="0.01" value="24" required>
-              <small>Measure the vine, not the pot height.</small>
-            </div>
-
-            <div class="field">
-              <label for="leaves">Current total leaf count</label>
-              <input id="leaves" name="Leaf_Count" type="number"
-                     min="0" max="500" step="1" value="20" required>
-              <small>Count existing leaves.</small>
-            </div>
-
-            <div class="field">
-              <label for="pot">Pot diameter (inches)</label>
-              <select id="pot" name="Pot_Size_Inches" required>
-                <option value="4">4 inches</option>
-                <option value="6" selected>6 inches</option>
-                <option value="8">8 inches</option>
-                <option value="10">10 inches</option>
-                <option value="12">12 inches</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="light">Light level (lux)</label>
-              <input id="light" name="Light_Lux" type="number"
-                     min="300" max="10000" step="1" value="2500" required>
-              <small>Lighting range: 300–10,000 lux</small>
-            </div>
-
-            <div class="field">
-              <label for="water-volume">Water per watering (mL)</label>
-              <input id="water-volume" name="Watering_Volume_mL"
-                     type="number" min="100" max="600" step="1"
-                     value="300" required>
-              <small>100–600 mL</small>
-            </div>
-
-            <div class="field">
-              <label for="frequency">Watering interval (days)</label>
-              <input id="frequency" name="Watering_Freq_Days"
-                     type="number" min="4" max="14" step="0.1"
-                     value="7" required>
-              <small>4–14 days</small>
-            </div>
-
-            <div class="field">
-              <label for="temperature">Temperature (°F)</label>
-              <input id="temperature" name="Temperature_F"
-                     type="number" min="62" max="85" step="0.1"
-                     value="75" required>
-              <small>62–85°F</small>
-            </div>
-
-            <div class="field field-full">
-              <label for="humidity">Humidity level</label>
-              <select id="humidity" name="Humidity_Level" required>
-                <option value="Low">Low</option>
-                <option value="Average" selected>Average</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="form-error" class="error-message" role="alert"
-               aria-live="polite"></div>
-
-          <button id="predict-button" class="primary-button" type="submit">
-            Predict my pothos growth
-            <span aria-hidden="true">→</span>
-          </button>
-
-          <p class="form-note">
-            Predictions are estimates from a synthetic-data model,
-            not guaranteed biological outcomes.
-          </p>
-        </form>
-      </section>
-
-      <section class="panel results-panel" aria-labelledby="results-title">
-        <div class="panel-heading">
-          <div>
-            <h2 id="results-title">Your forecast</h2>
-            <p>Model estimates for the next seven days.</p>
-          </div>
-          <span class="step-number">02</span>
-        </div>
-
-        <div id="results-placeholder" class="empty-state">
-          <div class="leaf-symbol" aria-hidden="true">✳</div>
-          <h3>Your plant's next chapter</h3>
-          <p>
-            Complete the form and run a prediction to see
-            your personalized forecast here.
-          </p>
-        </div>
-
-        <div id="results" class="results-content" hidden>
-          <div class="result-card">
-            <span class="result-label">Predicted stem growth</span>
-            <div class="result-value">
-              <span id="growth-result">—</span>
-              <span class="result-unit">inches</span>
-            </div>
-            <p>Estimated additional vine length over 7 days.</p>
-          </div>
-
-          <div class="result-card">
-            <span class="result-label">Estimated total leaf count</span>
-            <div class="result-value">
-              <span id="leaf-result">—</span>
-              <span class="result-unit">leaves</span>
-            </div>
-            <p>Model estimate for the current total leaf count.</p>
-          </div>
-
-          <div class="result-card result-card-highlight">
-            <span class="result-label">Whole-leaf estimate</span>
-            <div class="result-value">
-              <span id="rounded-leaf-result">—</span>
-              <span class="result-unit">leaves</span>
-            </div>
-            <p>Rounded version of the total leaf-count prediction.</p>
-          </div>
-        </div>
-
-        <div id="loading" class="loading-state" hidden>
-          <div class="spinner" aria-hidden="true"></div>
-          <p>Analyzing your plant conditions…</p>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="refresh" content="0; url=../mainPage.html#predict">
+    <title>Redirecting to Growth Predictor | The Botanists' Plant Simulation</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="../images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon-16x16.png">
+    <link rel="manifest" href="../images/site.webmanifest">
+    <link rel="stylesheet" href="../styles/style.css">
+    <script src="../scripts/main.js"></script>
+    <script>
+      window.location.replace("../mainPage.html#predict");
+    </script>
+  </head>
+  <body>
+    <header class="topbar site-header"></header>
+    <main class="instrument-main">
+      <section class="card">
+        <p class="eyebrow">
+          <span class="status-dot" aria-hidden="true"></span>
+          NAVIGATION REDIRECT · PREDICTOR INSTRUMENT
+        </p>
+        <h2 style="margin: 0.75rem 0;">Redirecting to the Growth Predictor…</h2>
+        <p>
+          The Golden Pothos growth predictor now lives directly on the Home instrument hub.
+        </p>
+        <div class="button-row">
+          <a class="btn btn-primary" href="../mainPage.html#predict">
+            Continue to Predictor →
+          </a>
         </div>
       </section>
-    </div>
-
-    <section class="disclaimer">
-      <strong>About these estimates</strong>
-      <p>
-        This model was trained on synthetic pothos data. Its reported
-        accuracy measures performance on simulated plants and may not
-        reflect real-world accuracy. The healthy-plant simulation assumes
-        no leaf loss.
-      </p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <p>Golden Pothos Growth Predictor · Experimental model</p>
-  </footer>
-
-
-</body>
+    </main>
+    <footer class="site-footer"></footer>
+  </body>
 </html>
